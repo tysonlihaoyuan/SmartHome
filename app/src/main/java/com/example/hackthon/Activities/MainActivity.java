@@ -1,4 +1,4 @@
-package com.example.hackthon;
+package com.example.hackthon.Activities;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -6,6 +6,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
+
+import com.example.hackthon.R;
 
 public class MainActivity extends AppCompatActivity {
     private TextView textView_entertainment;

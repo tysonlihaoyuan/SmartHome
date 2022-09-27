@@ -1,4 +1,4 @@
-package com.example.hackthon;
+package com.example.hackthon.Activities;
 
 
 
@@ -7,6 +7,8 @@ package com.example.hackthon;
 import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.example.hackthon.R;
 
 public class ConnectToDraw extends AppCompatActivity {
 

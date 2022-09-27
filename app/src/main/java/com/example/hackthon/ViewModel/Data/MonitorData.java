@@ -1,4 +1,4 @@
-package com.example.hackthon;
+package com.example.hackthon.ViewModel.Data;
 import java.util.ArrayList;
 import java.util.List;
 

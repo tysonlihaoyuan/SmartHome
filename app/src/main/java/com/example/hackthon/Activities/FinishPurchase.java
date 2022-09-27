@@ -1,4 +1,4 @@
-package com.example.hackthon;
+package com.example.hackthon.Activities;
 
 
 import android.content.Intent;
