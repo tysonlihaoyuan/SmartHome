@@ -1,4 +1,4 @@
-package com.example.hackthon;
+package com.example.chatroom;
 
 import org.junit.Test;
 
