@@ -4,8 +4,10 @@ import android.content.Context
 import android.widget.Toast
 
 object  ToastUtil {
+
     val ERROR_TEXT_PASSWORD_DO_NOT_MATCH = "Two passwords does not match"
     val EMAIL_IS_EMPTY = "Your input email is empty"
+    val NAME_IS_EMPTY = "Your input name is empty"
     val PASSWORD_IS_EMPTY = "Your password is empty"
     val CANNOT_REGISTER_CURRENT_USER = "Failed to register user"
     val REGISTER_SUCCESSFUL_SIGNING_IN = "Register successful, signing you in..."
