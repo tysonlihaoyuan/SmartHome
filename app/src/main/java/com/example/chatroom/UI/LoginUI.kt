@@ -57,16 +57,16 @@ fun LoginPage(navController: NavHostController) {
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
 
-        val username = remember { mutableStateOf(TextFieldValue()) }
+        val useremail = remember { mutableStateOf(TextFieldValue()) }
         val password = remember { mutableStateOf(TextFieldValue()) }
 
         Text(text = "Login", style = TextStyle(fontSize = 40.sp, fontFamily = FontFamily.Cursive))
 
         Spacer(modifier = Modifier.height(20.dp))
         TextField(
-            label = { Text(text = "Username") },
-            value = username.value,
-            onValueChange = { username.value = it })
+            label = { Text(text = "Email") },
+            value = useremail.value,
+            onValueChange = { useremail.value = it })
 
         Spacer(modifier = Modifier.height(20.dp))
         TextField(
@@ -79,7 +79,7 @@ fun LoginPage(navController: NavHostController) {
         Spacer(modifier = Modifier.height(20.dp))
         Box(modifier = Modifier.padding(40.dp, 0.dp, 40.dp, 0.dp)) {
             Button(
-                onClick = { navController.navigate(Routes.Home.route) },
+                onClick = {navController.navigate(Routes.ChatRoom.route)},
                 shape = RoundedCornerShape(50.dp),
                 modifier = Modifier
                     .fillMaxWidth()

@@ -2,6 +2,7 @@ package com.example.chatroom.UI
 
 
 
+import android.content.Context
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.ClickableText
@@ -14,6 +15,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
@@ -26,18 +28,22 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
+import com.example.chatroom.Activities.RegisterActivity
 import com.example.chatroom.Activities.Routes
 import com.example.chatroom.UI.Theme.Purple700
+import com.example.chatroom.ViewModel.RegisterViewModel
 
 
 @Preview
 @Composable
 fun RegisterPreview(){
     val navController = rememberNavController()
-    RegisterPage(navController = navController)
+    val viewModel = RegisterViewModel()
+
+    RegisterPage(navController = navController,viewModel, context = LocalContext.current)
 }
 @Composable
-fun RegisterPage(navController: NavHostController) {
+fun RegisterPage(navController: NavHostController,viewModel: RegisterViewModel,context : Context) {
     Box(modifier = Modifier.fillMaxSize()) {
         ClickableText(
             text = AnnotatedString("Back to Login"),
@@ -58,8 +64,8 @@ fun RegisterPage(navController: NavHostController) {
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-
-        val username = remember { mutableStateOf(TextFieldValue()) }
+        val email = remember { mutableStateOf(TextFieldValue()) }
+        val name = remember { mutableStateOf(TextFieldValue()) }
         val password = remember { mutableStateOf(TextFieldValue()) }
         val confirmpassword = remember { mutableStateOf(TextFieldValue()) }
 
@@ -70,9 +76,14 @@ fun RegisterPage(navController: NavHostController) {
         Spacer(modifier = Modifier.height(20.dp))
         TextField(
             label = { Text(text = "Email") },
-            value = username.value,
-            onValueChange = { username.value = it })
+            value = email.value,
+            onValueChange = { email.value = it })
 
+        Spacer(modifier = Modifier.height(20.dp))
+        TextField(
+            label = { Text(text = "name") },
+            value = name.value,
+            onValueChange = { name.value = it })
 
         //Password field
         Spacer(modifier = Modifier.height(20.dp))
@@ -86,7 +97,7 @@ fun RegisterPage(navController: NavHostController) {
         //ConfirmPassword filed
         Spacer(modifier = Modifier.height(20.dp))
         TextField(
-            label = { Text(text = "ConfirmPPassword") },
+            label = { Text(text = "ConfirmPassword") },
             value = confirmpassword.value,
             visualTransformation = PasswordVisualTransformation(),
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
@@ -94,11 +105,13 @@ fun RegisterPage(navController: NavHostController) {
         Spacer(modifier = Modifier.height(20.dp))
 
 
-
-
+        val userName =  name.value.text.trim();
+        val userEmail =  email.value.text.trim();
+        val userPassword =  password.value.text;
+        val userConfirmPassword =  confirmpassword.value.text;
         Box(modifier = Modifier.padding(40.dp, 0.dp, 40.dp, 0.dp)) {
             Button(
-                onClick = { navController.navigate(Routes.Home.route) },
+               onClick = { viewModel.RegisterUser(context, userName,userEmail,userPassword,userConfirmPassword,navController) },
                 shape = RoundedCornerShape(50.dp),
                 modifier = Modifier
                     .fillMaxWidth()
@@ -111,6 +124,8 @@ fun RegisterPage(navController: NavHostController) {
 
     }
 }
+
+
 
 
 

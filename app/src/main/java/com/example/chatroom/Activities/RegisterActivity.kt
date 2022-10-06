@@ -1,5 +1,6 @@
 package com.example.chatroom.Activities
 
+import android.content.Context
 import android.os.Bundle
 import android.view.View
 import androidx.activity.compose.setContent
@@ -10,8 +11,6 @@ import androidx.compose.material.Surface
 import androidx.compose.ui.Modifier
 import com.example.chatroom.UI.ChatroomTheme
 import com.example.chatroom.UI.ScreenMain
-import com.google.firebase.auth.FirebaseAuth
-
 
 class RegisterActivity :AppCompatActivity(), View.OnClickListener {
 
@@ -27,12 +26,15 @@ class RegisterActivity :AppCompatActivity(), View.OnClickListener {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colors.background
                 ) {
+
                     ScreenMain();
+
                 }
 
             }
         }
     }
+
 
 
 
