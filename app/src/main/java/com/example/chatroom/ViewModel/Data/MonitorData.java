@@ -1,5 +1,4 @@
-package com.example.hackthon.ViewModel.Data;
-import java.util.ArrayList;
+package com.example.chatroom.ViewModel.Data;
 import java.util.List;
 
 public class MonitorData {

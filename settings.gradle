@@ -1,2 +1,2 @@
 include ':app'
-rootProject.name = "hackthon"
+rootProject.name = "chatroom"

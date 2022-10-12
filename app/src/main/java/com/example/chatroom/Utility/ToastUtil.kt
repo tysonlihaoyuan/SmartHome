@@ -1,0 +1,21 @@
+package com.example.chatroom.Utility
+
+import android.content.Context
+import android.widget.Toast
+
+object  ToastUtil {
+
+    val ERROR_TEXT_PASSWORD_DO_NOT_MATCH = "Two passwords does not match"
+    val EMAIL_IS_EMPTY = "Your input email is empty"
+    val NAME_IS_EMPTY = "Your input name is empty"
+    val PASSWORD_IS_EMPTY = "Your password is empty"
+    val CANNOT_REGISTER_CURRENT_USER = "Failed to register user"
+    val REGISTER_SUCCESSFUL_SIGNING_IN = "Register successful, signing you in..."
+    val LOGIN_SUCCESSFUL = "Login successful"
+    val CANNOT_LOGIN_CURRENT_USER = "Cannot login"
+    val MESSAGE_SEND_FAIL = "Failed to send message"
+    fun showToast(context: Context, text: String, length: Int = Toast.LENGTH_LONG){
+        val toast = Toast.makeText(context, text, length)
+        toast.show()
+    }
+}
