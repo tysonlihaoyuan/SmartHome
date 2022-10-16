@@ -20,22 +20,21 @@ import com.google.firebase.ktx.Firebase
 
 class RegisterViewModel: ViewModel() {
     private lateinit var auth: FirebaseAuth
-//    private  var user: FirebaseUser
-    private val email: MutableLiveData<String> by lazy {
-        MutableLiveData<String>(auth.currentUser?.email)
-    }
+
+//    private val email: MutableLiveData<String> by lazy {
+//        MutableLiveData<String>(auth.currentUser?.email)
+//    }
 
 //    internal val displayName: MutableLiveData<String> by lazy {
 //        MutableLiveData<String>(auth.currentUser?.displayName)
 //    }
 
     init {
-        Log.d(TAG, "AuthViewModel is created")
+        Log.d(TAG, "RegisterViewModel is created")
 
         auth = Firebase.auth
-        Log.d(TAG, "AuthViewModel is created ${auth.currentUser?.email}")
-//        user = auth.currentUser!!
-        email.value = auth.currentUser?.email
+        Log.d(TAG, "init email is  ${auth.currentUser?.email}")
+
 
     }
 
@@ -67,7 +66,7 @@ class RegisterViewModel: ViewModel() {
             return
 
         }
-        auth.createUserWithEmailAndPassword(userEmail, userEmail).addOnCompleteListener { task ->
+        auth.createUserWithEmailAndPassword(userEmail, userPassword).addOnCompleteListener { task ->
                 if (task.isSuccessful) {
                     // Sign in success, update UI with the signed-in user's information
 

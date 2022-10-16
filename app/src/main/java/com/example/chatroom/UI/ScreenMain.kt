@@ -7,24 +7,28 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.compose.composable
 import com.example.chatroom.Activities.RegisterActivity
 import com.example.chatroom.Activities.Routes
+import com.example.chatroom.ViewModel.AddFriendListViewModel
+import com.example.chatroom.ViewModel.LoginViewModel
 import com.example.chatroom.ViewModel.RegisterViewModel
 
 
 @Composable
     fun ScreenMain(){
         val navController = rememberNavController()
-        val viewModel = RegisterViewModel()
+        val RegisterviewModel = RegisterViewModel()
+        val LoginviewModel = LoginViewModel()
+        val AddFriendviewModel = AddFriendListViewModel()
         val context = LocalContext.current
         NavHost(navController = navController, startDestination = Routes.Login.route) {
 
             composable(Routes.SignUp.route) {
-               RegisterPage(navController = navController,viewModel, context)
+               RegisterPage(navController = navController,RegisterviewModel, context)
             }
             composable(Routes.Login.route) {
-                LoginPage(navController = navController)
+                LoginPage(navController = navController,LoginviewModel, context)
             }
             composable(Routes.ChatRoom.route) {
-                ChatRoomPage(navController = navController)
+                ChatRoomPage(navController = navController,AddFriendviewModel,LoginviewModel)
             }
             composable(Routes.ForgotPassword.route) {
                 ForgetPasswordPage(navController = navController)

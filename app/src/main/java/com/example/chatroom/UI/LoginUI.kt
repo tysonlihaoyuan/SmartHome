@@ -1,5 +1,6 @@
 package com.example.chatroom.UI
 
+import android.content.Context
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.ClickableText
@@ -26,16 +27,19 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.example.chatroom.Activities.Routes
 import com.example.chatroom.UI.Theme.Purple700
+import com.example.chatroom.ViewModel.LoginViewModel
+import com.google.firebase.auth.FirebaseAuth
 
 
-@Preview
-    @Composable
-    fun LoginPreview(){
-        val navController = rememberNavController()
-        LoginPage(navController = navController)
-    }
+//
+//@Preview
+//    @Composable
+//    fun LoginPreview(){
+//        val navController = rememberNavController()
+//        LoginPage(navController = navController,)
+//    }
 @Composable
-fun LoginPage(navController: NavHostController) {
+fun LoginPage(navController: NavHostController, viewModel: LoginViewModel, context : Context) {
     Box(modifier = Modifier.fillMaxSize()) {
         ClickableText(
             text = AnnotatedString("Sign up here"),
@@ -77,9 +81,12 @@ fun LoginPage(navController: NavHostController) {
             onValueChange = { password.value = it })
 
         Spacer(modifier = Modifier.height(20.dp))
+
+        val userEmail =  useremail.value.text.trim();
+        val userPassword =  password.value.text.trim();
         Box(modifier = Modifier.padding(40.dp, 0.dp, 40.dp, 0.dp)) {
             Button(
-                onClick = {navController.navigate(Routes.ChatRoom.route)},
+                onClick = {viewModel.login(context, userEmail,userPassword,navController)},
                 shape = RoundedCornerShape(50.dp),
                 modifier = Modifier
                     .fillMaxWidth()

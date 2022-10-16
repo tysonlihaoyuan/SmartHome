@@ -4,42 +4,38 @@ import android.content.ContentValues
 import android.content.ContentValues.TAG
 import android.content.Context
 import android.util.Log
-import androidx.lifecycle.MutableLiveData
+import android.widget.Toast
 import androidx.lifecycle.ViewModel
 import androidx.navigation.NavHostController
 import com.example.chatroom.Activities.Routes
 import com.example.chatroom.Utility.ToastUtil
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 
+
 class LoginViewModel:ViewModel(){
 
-    private lateinit var auth: FirebaseAuth
-    //    private  var user: FirebaseUser
-    private val email: MutableLiveData<String> by lazy {
-        MutableLiveData<String>(auth.currentUser?.email)
-    }
-
+    private var auth: FirebaseAuth
 
 
     init {
-        Log.d(ContentValues.TAG, "LoginViewModel is created")
+        Log.d(TAG, "RegisterViewModel is created")
 
-        auth = Firebase.auth
-        Log.d(ContentValues.TAG, "LoginViewModel is created ${auth.currentUser?.email}")
-//        user = auth.currentUser!!
-        email.value = auth.currentUser?.email
+        auth = FirebaseAuth.getInstance()
+        Log.d(TAG, "init email is  ${auth.currentUser}")
+
 
     }
-    fun Login(context: Context,
 
+    fun login(context: Context,
               userEmail: String,
               userPassword: String,
-
               navController: NavHostController
     ){
-        Log.d(ContentValues.TAG, "register user function called email is $userEmail")
+
+
 
         if (userEmail.isBlank()) {
             ToastUtil.also { it.showToast(context, it.EMAIL_IS_EMPTY) }
@@ -50,22 +46,32 @@ class LoginViewModel:ViewModel(){
             return
         }
 
+
+
+
         auth.signInWithEmailAndPassword(userEmail, userPassword)
             .addOnCompleteListener{ task ->
                 if (task.isSuccessful) {
                     // Sign in success, update UI with the signed-in user's information
                     Log.d(TAG, "signInWithEmail:success")
-                    val user = auth.currentUser
+
+
 
                     ToastUtil.also { it.showToast(context, it.LOGIN_SUCCESSFUL) }
                     navController.navigate(Routes.ChatRoom.route)
                 } else {
                     // If sign in fails, display a message to the user.
                     Log.w(TAG, "signInWithEmail:failure", task.exception)
-                    ToastUtil.also { it.showToast(context, it.ERROR_TEXT_PASSWORD_DO_NOT_MATCH) }
+
+                    ToastUtil.also { it.showToast(context, it.CANNOT_LOGIN_CURRENT_USER) }
+
 
                 }
             }
-        // [END sign_in_with_email]
+
+    }
+    fun logout(navController: NavHostController){
+        Firebase.auth.signOut()
+        navController.navigate(Routes.Login.route)
     }
 }
