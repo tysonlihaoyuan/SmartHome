@@ -8,4 +8,9 @@ class User(val userName: String = "",
            val registrationTokens: MutableList<String> = mutableListOf(),
            val subscribedChatRoomUID: MutableList<String> = mutableListOf(),
            val friendsUID : MutableList<String> = mutableListOf()) {
+
+
+
+
+
 }

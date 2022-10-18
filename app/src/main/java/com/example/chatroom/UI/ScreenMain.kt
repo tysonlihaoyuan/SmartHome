@@ -28,7 +28,8 @@ import com.example.chatroom.ViewModel.RegisterViewModel
                 LoginPage(navController = navController,LoginviewModel, context)
             }
             composable(Routes.ChatRoom.route) {
-                ChatRoomPage(navController = navController,AddFriendviewModel,LoginviewModel)
+                ChatRoomPage(navController = navController,AddFriendviewModel,LoginviewModel,AddFriendviewModel.mUserList,context)
+//                ChatRoomPage(navController = navController)
             }
             composable(Routes.ForgotPassword.route) {
                 ForgetPasswordPage(navController = navController)
