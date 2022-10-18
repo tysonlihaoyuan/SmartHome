@@ -13,6 +13,7 @@ import com.example.chatroom.ViewModel.Data.User
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.ktx.auth
+import com.google.firebase.database.ktx.database
 import com.google.firebase.firestore.ktx.firestore
 
 
@@ -70,10 +71,16 @@ class RegisterViewModel: ViewModel() {
                 if (task.isSuccessful) {
                     // Sign in success, update UI with the signed-in user's information
 
-                    val db= Firebase.firestore
 
-                    db.collection("user").document("${FirebaseAuth.getInstance().currentUser!!.uid}").set(User(userName,"Register",userEmail,userPassword,uid=FirebaseAuth.getInstance().currentUser!!.uid))
+                    // firestore usage
+//                    val db= Firebase.firestore
+//
+//                    db.collection("user").document("${FirebaseAuth.getInstance().currentUser!!.uid}").set(User(userName,"Register",userEmail,userPassword,uid=FirebaseAuth.getInstance().currentUser!!.uid))
 
+                    val database = Firebase.database
+                    val myRef = database.getReference("Users").child("${FirebaseAuth.getInstance().currentUser!!.uid}")
+
+                    myRef.setValue(User(userName,"Register",userEmail,userPassword,uid=FirebaseAuth.getInstance().currentUser!!.uid))
 
 
                     Log.d(TAG, "register user with email ${userEmail} is successful")

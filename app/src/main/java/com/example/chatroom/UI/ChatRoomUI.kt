@@ -1,5 +1,6 @@
 package com.example.chatroom.UI
 
+
 import android.content.Context
 import android.graphics.Color
 import android.widget.Toast
@@ -20,7 +21,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.example.chatroom.Activities.Routes
-import com.example.chatroom.ViewModel.AddFriendListViewModel
+
 import com.example.chatroom.ViewModel.Data.User
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.selection.selectable
@@ -28,20 +29,24 @@ import androidx.compose.material.*
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
+
 import androidx.compose.ui.graphics.Color.Companion.DarkGray
+
+
 import androidx.compose.ui.graphics.Color.Companion.White
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.lifecycle.MutableLiveData
 import com.example.chatroom.Utility.ToastUtil
+import com.example.chatroom.ViewModel.AddFriendListViewModel
 import com.example.chatroom.ViewModel.LoginViewModel
 
 
 
 @Composable
 //fun ChatRoomPage(navController: NavHostController, viewModel: AddFriendListViewModel)
-fun ChatRoomPage(navController: NavHostController,viewModel: AddFriendListViewModel,loginViewModel: LoginViewModel,personListLiveData: MutableLiveData<List<User>>,context:Context)
+fun ChatRoomPage(navController: NavHostController, viewModel: AddFriendListViewModel, loginViewModel: LoginViewModel, personListLiveData: MutableLiveData<List<User>>, context:Context)
 {
 
 
@@ -125,31 +130,7 @@ fun ChatRoomPage(navController: NavHostController,viewModel: AddFriendListViewMo
 
 
     }
-//@Composable
-//fun ChatRoomPage(navController: NavHostController,viewModel: AddFriendListViewModel,personListLiveData: MutableLiveData<List<User>>) {
-//
-//
-//    // Here we access the live data object and convert it to a form that Jetpack Compose
-//    // understands using the observeAsState method.
-//
-//    // Reacting to state changes is the core behavior of Compose. We use the state composable
-//    // that is used for holding a state value in this composable for representing the current
-//    // value of the selectedIndex. Any composable that reads the value of counter will be recomposed
-//    // any time the value changes. This ensures that only the composables that depend on this
-//    // will be redraw while the rest remain unchanged. This ensures efficiency and is a
-//    // performance optimization. It is inspired from existing frameworks like React.
-//    val personList by personListLiveData.observeAsState(initial = emptyList())
-//    // Since Jetpack Compose uses the declarative way of programming, we can easily decide what
-//    // needs to shows vs hidden based on which branch of code is being executed. In this example,
-//    // if the personList returned by the live data is empty, we want to show a loading indicator,
-//    // otherwise we want show the appropriate list. So we run the appropriate composable based on
-//    // the branch of code executed and that takes care of rendering the right views.
-//    if (personList.isEmpty()) {
-//        LiveDataLoadingComponent()
-//    } else {
-//        LiveDataComponentList(personList)
-//    }
-//}
+
 
 
 
@@ -214,7 +195,15 @@ fun LiveDataComponentList(personList: List<User>,context: Context) {
                                 fontWeight = FontWeight.Bold
                             )
                         )
-                    }
+                    },secondaryText = {
+                            Text(
+                                text = "Age: ${person.useremail}",
+                                style = TextStyle(
+                                    fontFamily = FontFamily.Serif, fontSize = 15.sp,
+                                    fontWeight = FontWeight.Light, color = androidx.compose.ui.graphics.Color.DarkGray
+                            )
+                            )
+                        }
 
 
 
