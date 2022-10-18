@@ -1,5 +1,8 @@
+<<<<<<< HEAD
 
 
+=======
+>>>>>>> 8acc092d1c0ebcab7a09018dd7b31390809fe108
 package com.example.chatroom.ViewModel
 
 import android.content.ContentValues.TAG
@@ -15,9 +18,15 @@ class AddFriendListViewModel : ViewModel() {
     val db = Firebase.firestore
     val mUserList:MutableLiveData<List<User>> = MutableLiveData()
     val userList:ArrayList<User> = ArrayList()
+<<<<<<< HEAD
     init{
         loadUserList()
     }
+=======
+init{
+    loadUserList()
+}
+>>>>>>> 8acc092d1c0ebcab7a09018dd7b31390809fe108
 
     fun loadUserList(){
 
@@ -53,3 +62,7 @@ class AddFriendListViewModel : ViewModel() {
 
 
 }
+<<<<<<< HEAD
+=======
+
+>>>>>>> 8acc092d1c0ebcab7a09018dd7b31390809fe108
