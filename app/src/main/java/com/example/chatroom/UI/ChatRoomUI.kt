@@ -2,47 +2,45 @@ package com.example.chatroom.UI
 
 
 import android.content.Context
-import android.graphics.Color
-import android.widget.Toast
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.*
 import androidx.compose.material.MaterialTheme.typography
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
-import androidx.navigation.NavHostController
-import androidx.navigation.compose.rememberNavController
-import com.example.chatroom.Activities.Routes
-
-import com.example.chatroom.ViewModel.Data.User
-import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.selection.selectable
-import androidx.compose.material.*
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
-
-import androidx.compose.ui.graphics.Color.Companion.DarkGray
-
-
+import androidx.compose.ui.ExperimentalComposeUiApi
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusRequester.Companion.createRefs
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Color.Companion.White
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.lifecycle.MutableLiveData
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
 import com.example.chatroom.Utility.ToastUtil
 import com.example.chatroom.ViewModel.AddFriendListViewModel
+import com.example.chatroom.ViewModel.Data.User
 import com.example.chatroom.ViewModel.LoginViewModel
 
+import androidx.constraintlayout.compose.ConstraintLayout
+import androidx.compose.material.Icon
 
+import androidx.compose.material.icons.Icons
 
 @Composable
 //fun ChatRoomPage(navController: NavHostController, viewModel: AddFriendListViewModel)
@@ -51,59 +49,10 @@ fun ChatRoomPage(navController: NavHostController, viewModel: AddFriendListViewM
 
 
 
-    Column(
-        modifier = Modifier.padding(0.dp, 20.dp, 0.dp, 0.dp),
-
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-
-        Row(
-
-            horizontalArrangement = Arrangement.SpaceEvenly,
-            verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier.fillMaxWidth()
-
-
-        ){
-
-            Button(
-                onClick = { loginViewModel.logout(navController) },
-                shape = RoundedCornerShape(50.dp),
-
-                modifier = Modifier
-                    .width(50.dp)
-                    .height(35.dp),
-                contentPadding = PaddingValues(0.dp)
-            ) {
-                Text(text = "Back",textAlign = TextAlign.Center,)
-
-            }
-
-                Spacer(modifier = Modifier.width(40.dp))
-
-                Text(text = "ChatRoom", style = typography.caption, fontSize = 20.sp)
-
-            Spacer(modifier = Modifier.width(40.dp))
-
-                Button(
-                    onClick = {  /*TODO*/ },
-                    shape = RoundedCornerShape(50.dp),
-                    contentPadding = PaddingValues(0.dp),
-                    modifier = Modifier
-                        .width(50.dp)
-                        .height(35.dp)
-                ) {
-                        Text(text = "ADD",textAlign = TextAlign.Center,)
-
-                }
 
 
 
-        }
 
-
-        Spacer(modifier = Modifier.height(20.dp))
         // Here we access the live data object and convert it to a form that Jetpack Compose
         // understands using the observeAsState method.
 
@@ -122,11 +71,10 @@ fun ChatRoomPage(navController: NavHostController, viewModel: AddFriendListViewM
         if (personList.isEmpty()) {
             LiveDataLoadingComponent()
         } else {
-            LiveDataComponentList(personList,context)
+            showFriendList(personList,context,viewModel)
         }
 
 
-  }
 
 
     }
@@ -155,73 +103,135 @@ fun LiveDataLoadingComponent() {
     }
 }
 
-@OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun LiveDataComponentList(personList: List<User>,context: Context) {
-    // LazyColumn is a vertically scrolling list that only composes and lays out the currently
-    // visible items. This is very similar to what RecyclerView tries to do as it's more optimized
-    // than the VerticalScroller.
-    LazyColumn {
-        items(
-            items = personList, itemContent = { person ->
-                // Card composable is a predefined composable that is meant to represent the
-                // card surface as specified by the Material Design specification. We also
-                // configure it to have rounded corners and apply a modifier.
+fun topbar(viewModel: AddFriendListViewModel) {
+    Surface(color = Color.White) {
+        ConstraintLayout(
+            modifier = Modifier.fillMaxSize(),
+        ) {
+            val (addFriendButton, topicText) = createRefs()
+            Text(
+                text = "ChatRoom",
+                color = Color.Black,
+                style = MaterialTheme.typography.h4,
+                fontWeight = FontWeight.SemiBold,
+                modifier = Modifier
+                    .constrainAs(topicText) {
+                        start.linkTo(parent.start, 20.dp)
+//                        top.linkTo(parent.top, 10.dp)
+                    }
 
-                // You can think of Modifiers as implementations of the decorators pattern that are used to
-                // modify the composable that its applied to. In this example, we assign a padding of
-                // 16dp to the Card along with specifying it to occupy the entire available width.
-                Card(
-                    shape = RoundedCornerShape(4.dp),
-                    backgroundColor = White,
-                    modifier = Modifier.fillParentMaxWidth()
-                        .clickable { ToastUtil.showToast(context, "the card is clicked ${person.userName}")}
-                                        .padding(8.dp)
+            )
 
+            Button(
+                onClick = { viewModel.updateUsertimestamp()},
+                modifier = Modifier
+                    .constrainAs(addFriendButton) {
+                        end.linkTo(parent.end, 10.dp)
+//                        top.linkTo(parent.top, 10.dp)
 
-                ) {
-                    // ListItem is a predefined composable that is a Material Design implementation of [list
-                    // items](https://material.io/components/lists). This component can be used to achieve the
-                    // list item templates existing in the spec
-                    ListItem(
+                    }
+                    .width(50.dp)
+                    .height(35.dp)
 
-                        text = {
-                        // The Text composable is pre-defined by the Compose UI library; you can use this
-                        // composable to render text on the screen
-                        Text(
-                            text = person.userName,
-                            style = TextStyle(
-                                fontFamily = FontFamily.Serif, fontSize = 25.sp,
-                                fontWeight = FontWeight.Bold
-                            )
-                        )
-                    },secondaryText = {
-                            Text(
-                                text = "Age: ${person.useremail}",
-                                style = TextStyle(
-                                    fontFamily = FontFamily.Serif, fontSize = 15.sp,
-                                    fontWeight = FontWeight.Light, color = androidx.compose.ui.graphics.Color.DarkGray
-                            )
-                            )
-                        }
+            ) {
+                Text(text = "+")
+            }
 
-
-
-                    )
-//                        , icon = {
-//                        person.profilePictureUrl?.let { imageUrl ->
-//                            // Look at the implementation of this composable in ImageActivity to learn
-//                            // more about its implementation. It uses Picasso to load the imageUrl passed
-//                            // to it.
-//                            NetworkImageComponentPicasso(
-//                                url = imageUrl,
-//                                modifier = Modifier.width(60.dp).height(60.dp)
-//                            )
-//                        }
-//                    })
-                }
-            })
+        }
     }
 }
+
+
+
+@OptIn(ExperimentalMaterialApi::class, ExperimentalFoundationApi::class)
+@Composable
+fun showFriendList(personList: List<User>,context: Context,viewModel: AddFriendListViewModel) {
+    Surface(color = Color.White) {
+        ConstraintLayout(
+            modifier = Modifier.fillMaxSize(),
+        ) {
+            val ( topicText,userList,userListContainer,userItem) = createRefs()
+//
+
+            ConstraintLayout(Modifier.constrainAs(userListContainer){
+//
+
+            }) {
+                LazyColumn(
+
+                    modifier = Modifier
+                        .fillMaxWidth()
+//                        .verticalScroll(state = scrollState)
+                        .constrainAs(userList) {
+                            top.linkTo(parent.bottom, 10.dp)
+                        }){
+                    stickyHeader {
+                        topbar(viewModel)
+
+                    }
+                    items(
+                        items = personList, itemContent = { person ->
+
+                            Card(
+                                shape = RoundedCornerShape(4.dp),
+                                backgroundColor = White,
+                                modifier = Modifier
+                                    .fillParentMaxWidth()
+                                    .constrainAs(userItem) {
+//                                        start.linkTo(parent.start, 5.dp)
+//                                        end.linkTo(parent.end, 5.dp)
+                                    }
+                                    .clickable {
+                                        ToastUtil.showToast(
+                                            context,
+                                            "the card is clicked ${person.userName}"
+                                        )
+                                    }
+                                    .padding(8.dp)
+
+
+                            ) {
+
+                                ListItem(
+
+                                    text = {
+
+                                        Text(
+                                            text = person.userName,
+
+                                            style = TextStyle(
+                                                fontFamily = FontFamily.Serif, fontSize = 20.sp,
+                                                fontWeight = FontWeight.Bold
+                                            )
+                                        )
+                                    },secondaryText = {
+                                        Text(
+                                            text = "Email: ${person.useremail}",
+                                            style = TextStyle(
+                                                fontFamily = FontFamily.Serif, fontSize = 15.sp,
+                                                fontWeight = FontWeight.Light, color = androidx.compose.ui.graphics.Color.DarkGray
+                                            )
+                                        )
+                                    }
+
+                        ,icon = {
+
+                    })
+                            }
+                        })
+
+
+
+                }
+            }
+
+
+        }
+    }
+}
+
+
+
 
 

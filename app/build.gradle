@@ -104,6 +104,8 @@ dependencies {
     implementation 'com.google.firebase:firebase-database:19.2.0'
     implementation 'com.google.firebase:firebase-firestore-ktx'
     implementation 'com.google.firebase:firebase-messaging:20.1.6'
+    implementation "androidx.constraintlayout:constraintlayout-compose:1.0.1"
+    implementation "androidx.compose.material:material-icons-extended:$compose_version"
 
 }
 apply plugin: 'com.google.gms.google-services'

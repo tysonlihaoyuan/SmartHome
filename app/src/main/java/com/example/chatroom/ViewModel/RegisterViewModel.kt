@@ -3,21 +3,19 @@ package com.example.chatroom.ViewModel
 import android.content.ContentValues.TAG
 import android.content.Context
 import android.util.Log
-import androidx.compose.foundation.layout.BoxScope
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.navigation.NavHostController
 import com.example.chatroom.Activities.Routes
 import com.example.chatroom.Utility.ToastUtil
 import com.example.chatroom.ViewModel.Data.User
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.ktx.auth
+import com.google.firebase.database.ServerValue
 import com.google.firebase.database.ktx.database
-import com.google.firebase.firestore.ktx.firestore
 
 
 import com.google.firebase.ktx.Firebase
+
 
 class RegisterViewModel: ViewModel() {
     private lateinit var auth: FirebaseAuth
@@ -79,8 +77,10 @@ class RegisterViewModel: ViewModel() {
 
                     val database = Firebase.database
                     val myRef = database.getReference("Users").child("${FirebaseAuth.getInstance().currentUser!!.uid}")
-
-                    myRef.setValue(User(userName,"Register",userEmail,userPassword,uid=FirebaseAuth.getInstance().currentUser!!.uid))
+                    val map = HashMap< String?, Any?>()
+                    map["timestamp"] = ServerValue.TIMESTAMP;
+                    map.put("timestamp", ServerValue.TIMESTAMP);
+                    myRef.setValue(User(userName,"Register",userEmail,userPassword, uid =FirebaseAuth.getInstance().currentUser!!.uid, lastUpdate = map ))
 
 
                     Log.d(TAG, "register user with email ${userEmail} is successful")
@@ -101,3 +101,5 @@ class RegisterViewModel: ViewModel() {
 
 
 }
+
+

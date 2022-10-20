@@ -4,12 +4,14 @@ import android.content.ContentValues.TAG
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.google.firebase.firestore.ktx.firestore
-import com.google.firebase.ktx.Firebase
 import com.example.chatroom.ViewModel.Data.User
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.*
 import com.google.firebase.database.ktx.database
 import com.google.firebase.database.ktx.getValue
+
+import com.google.firebase.ktx.Firebase
 
 
 class AddFriendListViewModel : ViewModel() {
@@ -49,8 +51,8 @@ class AddFriendListViewModel : ViewModel() {
 //        }
 //        userRef = databaseReference.child
         val database = Firebase.database
-        val userRef = database.getReference("Users")
-        Log.d(TAG, "number of users ${userRef.key}")
+        val userRef = database.getReference("Users").orderByChild("lastUpdate/timestamp")
+//        Log.d(TAG, "number of users ${userRef.}")
         userListener = object : ValueEventListener {
 
             override fun onDataChange(dataSnapshot: DataSnapshot) {
@@ -63,17 +65,14 @@ class AddFriendListViewModel : ViewModel() {
                     // Extract Message object from the DataSnapshot
                     val user: User? = child.getValue<User>()
 
-                    if (user != null) {
-                        currentUserList.add(user)
-                        userList.add(user)
-                    }
-                    // Use the message
-                    // [START_EXCLUDE]
-                    Log.d(TAG, "current user ${user?.userName}")
-                    Log.d(TAG, "message sender name: ${user?.useremail}")
 
-//                  userList.add(user)
-                    // [END_EXCLUDE]
+                    if (user != null) {
+
+                        currentUserList.add(0,user)
+                        userList.add(0,user)
+                    }
+
+
                 }
                 mUserList.postValue(currentUserList)
             }
@@ -93,6 +92,44 @@ class AddFriendListViewModel : ViewModel() {
 
         }
 
+//    fun updateTimestamp(){
+//        val database = Firebase.database
+//        val userRef = database.getReference("Users")
+//
+//        val map = HashMap<Any?, Any?>()
+//        map["timestamp"] = ServerValue.TIMESTAMP
+//        map.put("timestamp", ServerValue.TIMESTAMP);
+//        Log.d(TAG, "curent time  ${map["timestamp"]}")
+//        val valueEventListener: ValueEventListener = object : ValueEventListener {
+//            override fun onDataChange(dataSnapshot: DataSnapshot) {
+//                for (ds in dataSnapshot.children) {
+//                    ds.child("lastUpdate").ref.setValue(map)
+//                    Log.d(TAG, "curent time  ${map["timestamp"]}")
+////                    val username = ds.child("lastUpdate").setValue()
+////                    Log.d(TAG, "current user ${username}")
+//                }
+//            }
+//
+//            override fun onCancelled( databaseError: DatabaseError) {
+//
+//
+//                Log.d(TAG, "error add timestamp")
+//            }
+//        }
+//        userRef.addListenerForSingleValueEvent(valueEventListener)
+//    }
+ fun updateUsertimestamp(){
+        val database = Firebase.database
+        val userRef = database.getReference("Users")
+        var auth: FirebaseAuth =Firebase.auth
+        val currentUid = auth.uid
+        val map = HashMap<String?, Any?>()
+        map["timestamp"] = ServerValue.TIMESTAMP
+        map.put("timestamp", ServerValue.TIMESTAMP);
+
+        userRef.child("${currentUid}").child("lastUpdate").setValue(map)
+
+ }
 
     }
 
