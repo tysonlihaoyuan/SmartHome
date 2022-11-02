@@ -85,7 +85,7 @@ class RegisterViewModel: ViewModel() {
 
                     Log.d(TAG, "register user with email ${userEmail} is successful")
 
-                    navController.navigate(Routes.ChatRoom.route)
+                    navController.navigate(Routes.ChatChanel.route)
 
 
                 } else {

@@ -75,6 +75,7 @@ class AddFriendListViewModel : ViewModel() {
 
                 }
                 mUserList.postValue(currentUserList)
+
             }
 
             override fun onCancelled(error: DatabaseError) {
@@ -83,6 +84,7 @@ class AddFriendListViewModel : ViewModel() {
 
 
         }
+
         userRef.addValueEventListener(userListener)
     }
         fun getUserlist(): List<User> {

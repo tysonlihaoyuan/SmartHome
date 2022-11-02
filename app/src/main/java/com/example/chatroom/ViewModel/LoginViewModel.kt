@@ -58,7 +58,7 @@ class LoginViewModel:ViewModel(){
 
 
                     ToastUtil.also { it.showToast(context, it.LOGIN_SUCCESSFUL) }
-                    navController.navigate(Routes.ChatRoom.route)
+                    navController.navigate(Routes.ChatChanel.route)
                 } else {
                     // If sign in fails, display a message to the user.
                     Log.w(TAG, "signInWithEmail:failure", task.exception)

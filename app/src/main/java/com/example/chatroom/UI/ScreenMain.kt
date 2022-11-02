@@ -12,6 +12,7 @@ import com.example.chatroom.Activities.Routes
 import com.example.chatroom.ViewModel.AddFriendListViewModel
 
 import com.example.chatroom.ViewModel.LoginViewModel
+import com.example.chatroom.ViewModel.MessageListViewModel
 import com.example.chatroom.ViewModel.RegisterViewModel
 
 
@@ -21,6 +22,7 @@ import com.example.chatroom.ViewModel.RegisterViewModel
         val RegisterviewModel = RegisterViewModel()
         val LoginviewModel = LoginViewModel()
         val AddFriendviewModel = AddFriendListViewModel()
+        val MessageListViewModel = MessageListViewModel()
         val context = LocalContext.current
         NavHost(navController = navController, startDestination = Routes.Login.route) {
 
@@ -30,14 +32,23 @@ import com.example.chatroom.ViewModel.RegisterViewModel
             composable(Routes.Login.route) {
                 LoginPage(navController = navController,LoginviewModel, context)
             }
-            composable(Routes.ChatRoom.route) {
-                ChatRoomPage(navController = navController,AddFriendviewModel,LoginviewModel,AddFriendviewModel.mUserList,context)
-//                ChatRoomPage(navController = navController)
+            composable(Routes.FriendList.route) {
+                FriendLsit(navController = navController,AddFriendviewModel,LoginviewModel,AddFriendviewModel.mUserList,context)
             }
             composable(Routes.ForgotPassword.route) {
                 ForgetPasswordPage(navController = navController)
             }
+            composable(Routes.ChatChanel.route) {
+                chatChannelPage(navController = navController,MessageListViewModel,MessageListViewModel.mChannelLsit,MessageListViewModel.mUser,context)
+            }
+            composable(Routes.Home.route) {
+                HomePage(navController =navController , context =context )
+            }
+            composable(Routes.AddFriend.route) {
+                addFriendPage(navController =navController , context =context )
+            }
         }
+
     }
 
 

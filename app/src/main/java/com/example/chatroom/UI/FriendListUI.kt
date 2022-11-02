@@ -7,44 +7,33 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
-import androidx.compose.material.MaterialTheme.typography
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
-import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.focus.FocusRequester.Companion.createRefs
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Color.Companion.White
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.MutableLiveData
 import androidx.navigation.NavHostController
-import androidx.navigation.compose.rememberNavController
 import com.example.chatroom.Utility.ToastUtil
 import com.example.chatroom.ViewModel.AddFriendListViewModel
 import com.example.chatroom.ViewModel.Data.User
 import com.example.chatroom.ViewModel.LoginViewModel
 
 import androidx.constraintlayout.compose.ConstraintLayout
-import androidx.compose.material.Icon
-
-import androidx.compose.material.icons.Icons
 
 @Composable
-//fun ChatRoomPage(navController: NavHostController, viewModel: AddFriendListViewModel)
-fun ChatRoomPage(navController: NavHostController, viewModel: AddFriendListViewModel, loginViewModel: LoginViewModel, personListLiveData: MutableLiveData<List<User>>, context:Context)
+//fun FriendLsit(navController: NavHostController, viewModel: AddFriendListViewModel)
+fun FriendLsit(navController: NavHostController, viewModel: AddFriendListViewModel, loginViewModel: LoginViewModel, personListLiveData: MutableLiveData<List<User>>, context:Context)
 {
 
 
@@ -71,7 +60,7 @@ fun ChatRoomPage(navController: NavHostController, viewModel: AddFriendListViewM
         if (personList.isEmpty()) {
             LiveDataLoadingComponent()
         } else {
-            showFriendList(personList,context,viewModel)
+            ScaffoldFrame(contentFunction = { showFriendList(personList,context,viewModel,navController) }, navController = navController)
         }
 
 
@@ -103,61 +92,66 @@ fun LiveDataLoadingComponent() {
     }
 }
 
-@Composable
-fun topbar(viewModel: AddFriendListViewModel) {
-    Surface(color = Color.White) {
-        ConstraintLayout(
-            modifier = Modifier.fillMaxSize(),
-        ) {
-            val (addFriendButton, topicText) = createRefs()
-            Text(
-                text = "ChatRoom",
-                color = Color.Black,
-                style = MaterialTheme.typography.h4,
-                fontWeight = FontWeight.SemiBold,
-                modifier = Modifier
-                    .constrainAs(topicText) {
-                        start.linkTo(parent.start, 20.dp)
-//                        top.linkTo(parent.top, 10.dp)
-                    }
-
-            )
-
-            Button(
-                onClick = { viewModel.updateUsertimestamp()},
-                modifier = Modifier
-                    .constrainAs(addFriendButton) {
-                        end.linkTo(parent.end, 10.dp)
-//                        top.linkTo(parent.top, 10.dp)
-
-                    }
-                    .width(50.dp)
-                    .height(35.dp)
-
-            ) {
-                Text(text = "+")
-            }
-
-        }
-    }
-}
+//@Composable
+//fun Topbar(viewModel: AddFriendListViewModel,navController: NavHostController) {
+//    Surface(color = Color.White) {
+//        ConstraintLayout(
+////            modifier = Modifier.fillMaxSize(),
+//        ) {
+//            val (addFriendButton, topicText) = createRefs()
+//            Text(
+//                text = "ChatRoom",
+//                color = Color.Black,
+//                style = MaterialTheme.typography.h4,
+//                fontWeight = FontWeight.SemiBold,
+//                modifier = Modifier
+//                    .constrainAs(topicText) {
+//                        start.linkTo(parent.start, 20.dp)
+////                        top.linkTo(parent.top, 10.dp)
+//                    }
+//
+//            )
+//
+////            Button(
+////                onClick = {  navController.navigate(Routes.ChatChanel.route)},
+////                modifier = Modifier
+////                    .constrainAs(addFriendButton) {
+////                        end.linkTo(parent.end, 10.dp)
+//////                        top.linkTo(parent.top, 10.dp)
+////
+////                    }
+////                    .width(50.dp)
+////                    .height(35.dp)
+////
+////            ) {
+////                Text(text = "+")
+////            }
+//
+//        }
+//    }
+//}
 
 
 
 @OptIn(ExperimentalMaterialApi::class, ExperimentalFoundationApi::class)
 @Composable
-fun showFriendList(personList: List<User>,context: Context,viewModel: AddFriendListViewModel) {
+fun showFriendList(
+    personList: List<User>,
+    context: Context,
+    viewModel: AddFriendListViewModel,
+    navController: NavHostController) {
     Surface(color = Color.White) {
         ConstraintLayout(
             modifier = Modifier.fillMaxSize(),
         ) {
             val ( topicText,userList,userListContainer,userItem) = createRefs()
 //
-
+            val scaffoldState = rememberScaffoldState(rememberDrawerState(DrawerValue.Closed))
             ConstraintLayout(Modifier.constrainAs(userListContainer){
 //
 
             }) {
+
                 LazyColumn(
 
                     modifier = Modifier
@@ -166,10 +160,7 @@ fun showFriendList(personList: List<User>,context: Context,viewModel: AddFriendL
                         .constrainAs(userList) {
                             top.linkTo(parent.bottom, 10.dp)
                         }){
-                    stickyHeader {
-                        topbar(viewModel)
-
-                    }
+//
                     items(
                         items = personList, itemContent = { person ->
 
@@ -224,12 +215,62 @@ fun showFriendList(personList: List<User>,context: Context,viewModel: AddFriendL
 
 
                 }
+
             }
 
 
         }
     }
 }
+//
+//@SuppressLint("UnusedMaterialScaffoldPaddingParameter")
+//@Composable
+//fun fullFriendList( personList: List<User>,
+//                    context: Context,
+//                    viewModel: AddFriendListViewModel,
+//                    navController: NavHostController) {
+//    val scaffoldState = rememberScaffoldState(rememberDrawerState(DrawerValue.Closed))
+//    Scaffold(
+//        scaffoldState = scaffoldState,
+//        topBar = { Topbar(viewModel = viewModel, navController = navController ) },
+//        bottomBar = { BottomNavigationBar(navController) },
+//
+//        floatingActionButtonPosition = FabPosition.End,
+//        floatingActionButton = { FloatingActionButton(onClick = {}){
+//            Icon(imageVector = Icons.Default.Add, contentDescription = "fab icon")
+//        } },
+////        drawerContent = { MyDrawerConten(drawers) },
+////       content = {showFriendList(
+////           personList = personList,
+////           context = context,
+////           viewModel = viewModel,
+////           navController =navController
+////       )}
+//
+//    ){
+////            paddingValues ->
+////        // Screen content
+////        Column(modifier = Modifier
+////
+////            .padding(paddingValues)
+////            .verticalScroll(rememberScrollState())) {
+////
+////            Text("Bottom app bar padding:  $paddingValues")
+////
+////            repeat(50) {
+////                Text(it.toString())
+////            }
+////        }
+//        showFriendList(
+//           personList = personList,
+//           context = context,
+//           viewModel = viewModel,
+//           navController =navController
+//       )
+//    }
+//}
+
+
 
 
 
