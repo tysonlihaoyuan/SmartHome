@@ -33,7 +33,7 @@ import com.example.chatroom.ViewModel.RegisterViewModel
                 LoginPage(navController = navController,LoginviewModel, context)
             }
             composable(Routes.FriendList.route) {
-                FriendLsit(navController = navController,AddFriendviewModel,LoginviewModel,AddFriendviewModel.mUserList,context)
+                FriendLsit(navController = navController,AddFriendviewModel,AddFriendviewModel.mUserList,context)
             }
             composable(Routes.ForgotPassword.route) {
                 ForgetPasswordPage(navController = navController)
@@ -46,6 +46,9 @@ import com.example.chatroom.ViewModel.RegisterViewModel
             }
             composable(Routes.AddFriend.route) {
                 addFriendPage(navController =navController , context =context )
+            }
+            composable(Routes.ChatView.route) {
+                ChatViewPage(navController =navController , context =context , viewModel = MessageListViewModel,MessageListViewModel.mUser,MessageListViewModel.mMessageList)
             }
         }
 

@@ -33,7 +33,7 @@ import androidx.constraintlayout.compose.ConstraintLayout
 
 @Composable
 //fun FriendLsit(navController: NavHostController, viewModel: AddFriendListViewModel)
-fun FriendLsit(navController: NavHostController, viewModel: AddFriendListViewModel, loginViewModel: LoginViewModel, personListLiveData: MutableLiveData<List<User>>, context:Context)
+fun FriendLsit(navController: NavHostController, viewModel: AddFriendListViewModel, personListLiveData: MutableLiveData<List<User>>, context:Context)
 {
 
 

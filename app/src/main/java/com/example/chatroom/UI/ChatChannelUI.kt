@@ -25,6 +25,7 @@ import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.lifecycle.MutableLiveData
 import androidx.navigation.NavHostController
+import com.example.chatroom.Activities.Routes
 import com.example.chatroom.Utility.ToastUtil
 import com.example.chatroom.ViewModel.Data.ChatChannel
 import com.example.chatroom.ViewModel.Data.User
@@ -119,7 +120,7 @@ fun showChannelList(channelList: List<ChatChannel>,user:User,context: Context,vi
 //                    }
                     items(
                         items = channelList, itemContent = { channel ->
-
+                            val currentRecevier = viewModel.getUserbyUid(viewModel.showChannelName(channel.members))?.userName
                             Card(
                                 shape = RoundedCornerShape(4.dp),
                                 backgroundColor = White,
@@ -134,6 +135,7 @@ fun showChannelList(channelList: List<ChatChannel>,user:User,context: Context,vi
                                             context,
                                             "the card is clicked ${channel.channelUid}"
                                         )
+                                        navController.navigate(Routes.ChatView.route)
                                     }
                                     .padding(8.dp)
 
@@ -145,12 +147,13 @@ fun showChannelList(channelList: List<ChatChannel>,user:User,context: Context,vi
                                     text = {
 
                                         Text(
-                                            text = "${viewModel.getUserbyUid(viewModel.showChannelName(channel.members))?.userName}",
+                                            text = "$currentRecevier",
 
                                             style = TextStyle(
                                                 fontFamily = FontFamily.Serif, fontSize = 20.sp,
                                                 fontWeight = FontWeight.Bold
                                             )
+
                                         )
                                     },secondaryText = {
                                         Text(

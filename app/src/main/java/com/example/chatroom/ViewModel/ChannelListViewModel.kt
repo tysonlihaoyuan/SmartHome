@@ -108,7 +108,8 @@ class MessageListViewModel:ViewModel() {
     fun updateMessage(message:String,receiver:String){
         val database =Firebase.database
         val messageRef = database.getReference("ChatRoom")
-        messageListener = object : ValueEventListener {
+
+        messageRef.addListenerForSingleValueEvent(  object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 var currentChatRoomMemberList: MutableList<String>
                 var finalMessageList: MutableList<Message> = mutableListOf()
@@ -125,38 +126,166 @@ class MessageListViewModel:ViewModel() {
 
                     if (chatChannel != null) {
                         currentChatRoomMemberList = chatChannel.members
+//                        Log.d(
+//                            ContentValues.TAG,
+//                            "sucessful found currentChatRoomMemberList ${currentChatRoomMemberList.get(0)} and ${currentChatRoomMemberList.get(1)} "
+//                        )
+//                        Log.d(
+//                            ContentValues.TAG,
+//                            "sucessful found currentChatChannel ${currentChatChannel.get(0)} and ${currentChatChannel.get(1)} "
+//                        )
+                        if (currentChatRoomMemberList.equals(currentChatChannel) ) {
 
-                        if (currentChatRoomMemberList == currentChatChannel) {
                             finalMessageList=chatChannel.messaesList
                             finalMessageList.add(newMessage)
+                            messageRef.child("${chatChannel.channelUid}").child("messaesList").setValue(finalMessageList).addOnSuccessListener {
 
-                            Log.d(
+                                Log.d(
                                 ContentValues.TAG,
                                 "sucessful updated message to the channel ${chatChannel.channelUid}"
-                            )
+                            ) }.addOnFailureListener {
+                                Log.w(ContentValues.TAG, "messages:onCancelled: ${it.message}")
+                            }
+
+//                            Log.d(
+//                                ContentValues.TAG,
+//                                "sucessful updated message to the channel ${chatChannel.channelUid}"
+//                            )
 
                         }
                     }
                 }
                 mMessageList.postValue(finalMessageList)
-
-
             }
 
             override fun onCancelled(error: DatabaseError) {
                 Log.w(ContentValues.TAG, "messages:onCancelled: ${error.message}")
             }
 
-
-        }
-
-        messageRef.addValueEventListener(messageListener)
+        })
+//        messageListener = object : ValueEventListener {
+//            override fun onDataChange(snapshot: DataSnapshot) {
+//                var currentChatRoomMemberList: MutableList<String>
+//                var finalMessageList: MutableList<Message> = mutableListOf()
+//                val sender = currentUser.uid.toString()
+//                val timestamp = HashMap<String?, Any?>()
+//                timestamp["timestamp"] = ServerValue.TIMESTAMP
+//                timestamp.put("timestamp", ServerValue.TIMESTAMP);
+//                val newMessage = Message(sender,receiver,message,timestamp)
+//                val currentChatChannel =  mutableListOf(sender,receiver)
+//                currentChatChannel.sort()
+//                snapshot.children.forEach { child ->
+//                    // Extract Message object from the DataSnapshot
+//                    val chatChannel: ChatChannel? = child.getValue<ChatChannel>()
+//
+//                    if (chatChannel != null) {
+//                        currentChatRoomMemberList = chatChannel.members
+////                        Log.d(
+////                            ContentValues.TAG,
+////                            "sucessful found currentChatRoomMemberList ${currentChatRoomMemberList.get(0)} and ${currentChatRoomMemberList.get(1)} "
+////                        )
+////                        Log.d(
+////                            ContentValues.TAG,
+////                            "sucessful found currentChatChannel ${currentChatChannel.get(0)} and ${currentChatChannel.get(1)} "
+////                        )
+//                        if (currentChatRoomMemberList.equals(currentChatChannel) ) {
+//
+//                            finalMessageList=chatChannel.messaesList
+//                            finalMessageList.add(newMessage)
+//                            messageRef.child("${chatChannel.channelUid}").child("messaesList").setValue(finalMessageList).addOnSuccessListener {  Log.d(
+//                                ContentValues.TAG,
+//                                "sucessful updated message to the channel ${chatChannel.channelUid}"
+//                            ) }.addOnFailureListener {
+//                                Log.w(ContentValues.TAG, "messages:onCancelled: ${it.message}")
+//                            }
+//
+////                            Log.d(
+////                                ContentValues.TAG,
+////                                "sucessful updated message to the channel ${chatChannel.channelUid}"
+////                            )
+//
+//                        }
+//                    }
+//                }
+//                mMessageList.postValue(finalMessageList)
+//
+//
+//            }
+//
+//            override fun onCancelled(error: DatabaseError) {
+//                Log.w(ContentValues.TAG, "messages:onCancelled: ${error.message}")
+//            }
+//
+//
+//        }
+//
+//        messageRef.addValueEventListener(messageListener)
 
 
     }
 
 
-
+//    fun getCurrentMessageHistory(receiver:String){
+//        val database =Firebase.database
+//        val messageRef = database.getReference("ChatRoom")
+//        messageListener = object : ValueEventListener {
+//            override fun onDataChange(snapshot: DataSnapshot) {
+//                var currentChatRoomMemberList: MutableList<String>
+//                var finalMessageList: MutableList<Message> = mutableListOf()
+//                val sender = currentUser.uid.toString()
+//                val timestamp = HashMap<String?, Any?>()
+//                timestamp["timestamp"] = ServerValue.TIMESTAMP
+//                timestamp.put("timestamp", ServerValue.TIMESTAMP);
+//                val newMessage = Message(sender,receiver,message,timestamp)
+//                val currentChatChannel =  mutableListOf(sender,receiver)
+//                currentChatChannel.sort()
+//                snapshot.children.forEach { child ->
+//                    // Extract Message object from the DataSnapshot
+//                    val chatChannel: ChatChannel? = child.getValue<ChatChannel>()
+//
+//                    if (chatChannel != null) {
+//                        currentChatRoomMemberList = chatChannel.members
+////                        Log.d(
+////                            ContentValues.TAG,
+////                            "sucessful found currentChatRoomMemberList ${currentChatRoomMemberList.get(0)} and ${currentChatRoomMemberList.get(1)} "
+////                        )
+////                        Log.d(
+////                            ContentValues.TAG,
+////                            "sucessful found currentChatChannel ${currentChatChannel.get(0)} and ${currentChatChannel.get(1)} "
+////                        )
+//                        if (currentChatRoomMemberList.equals(currentChatChannel) ) {
+//
+//                            finalMessageList=chatChannel.messaesList
+//                            finalMessageList.add(newMessage)
+//                            messageRef.child("${chatChannel.channelUid}").child("messaesList").setValue(finalMessageList).addOnSuccessListener {  Log.d(
+//                                ContentValues.TAG,
+//                                "sucessful updated message to the channel ${chatChannel.channelUid}"
+//                            ) }.addOnFailureListener {
+//                                Log.w(ContentValues.TAG, "messages:onCancelled: ${it.message}")
+//                            }
+//
+////                            Log.d(
+////                                ContentValues.TAG,
+////                                "sucessful updated message to the channel ${chatChannel.channelUid}"
+////                            )
+//
+//                        }
+//                    }
+//                }
+//                mMessageList.postValue(finalMessageList)
+//
+//
+//            }
+//
+//            override fun onCancelled(error: DatabaseError) {
+//                Log.w(ContentValues.TAG, "messages:onCancelled: ${error.message}")
+//            }
+//
+//
+//        }
+//
+//        messageRef.addValueEventListener(messageListener)
+//    }
 
     //get the current user's existing channel list
     fun getCurrentUserChannel(){
