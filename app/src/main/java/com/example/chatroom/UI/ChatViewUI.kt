@@ -1,8 +1,11 @@
 package com.example.chatroom.UI
 
 import android.annotation.SuppressLint
+import android.content.ContentValues
 import android.content.Context
+import android.util.Log
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsPressedAsState
@@ -39,31 +42,34 @@ import com.example.chatroom.ViewModel.MessageListViewModel
 
 @Composable
 fun ChatViewPage(navController: NavHostController, context: Context, viewModel:MessageListViewModel, userLiveData: MutableLiveData<User?>,messageLiveData:MutableLiveData<List<Message>>) {
+
     val messageList by messageLiveData.observeAsState(initial = emptyList())
     val user by userLiveData.observeAsState(initial = User())
+    Log.d(ContentValues.TAG, "user is existing  ${user?.userName}")
     // Since Jetpack Compose uses the declarative way of programming, we can easily decide what
     // needs to shows vs hidden based on which branch of code is being executed. In this example,
     // if the personList returned by the live data is empty, we want to show a loading indicator,
     // otherwise we want show the appropriate list. So we run the appropriate composable based on
     // the branch of code executed and that takes care of rendering the right views.
+    user?.let { viewModel.getCurrentMessageHistory(it.uid) }
+////        Log.d(ContentValues.TAG, "user is existing  ${user?.userName}")
+//    Log.d(ContentValues.TAG, "message is existing  ${messageList}")
     ScaffoldFrameTop(contentFunction = {
         user?.let {
             showMessageList(
-            messageList = messageList,
+            messageList = messageList ,
             user = it,
             context =context ,
             viewModel = MessageListViewModel(),
             navController = navController
             )
         }
+
+
     },  bottomFunction= { user?.let { AddMessage(user = it, viewModel = MessageListViewModel()) } }, topbarFunction = {user?.let { Top(
         user = it
     ) }})
-//    if (messageList.isEmpty()) {
-//        MessageLiveDataLoadingComponent()
-//    } else {
-//        user?.let { AddMessage(it,viewModel) }
-//    }
+
 }
 
 
@@ -84,6 +90,7 @@ fun MessageLiveDataLoadingComponent() {
 @OptIn(ExperimentalMaterialApi::class, ExperimentalFoundationApi::class)
 @Composable
 fun showMessageList(messageList: List<Message>, user:User, context: Context, viewModel: MessageListViewModel, navController: NavHostController) {
+
     Surface(color = Color.White) {
         ConstraintLayout(
             modifier = Modifier.fillMaxSize(),
@@ -103,63 +110,52 @@ fun showMessageList(messageList: List<Message>, user:User, context: Context, vie
                         .constrainAs(userList) {
                             top.linkTo(parent.bottom, 10.dp)
                         }){
-//                    stickyHeader {
-//                        Topbar(viewModel,navController)
-//
-//                    }
+
                     items(
-                        items = messageList, itemContent = { message ->
-//                            val currentRecevier = viewModel.getUserbyUid(viewModel.showChannelName(channel.members))?.userName
-                            Card(
-                                shape = RoundedCornerShape(4.dp),
-                                backgroundColor = Color.White,
-                                modifier = Modifier
-                                    .fillParentMaxWidth()
-                                    .constrainAs(userItem) {
+                        items = messageList
+                    ) { message ->
+
+                        Card(
+                            shape = RoundedCornerShape(4.dp),
+                            backgroundColor = Color.White,
+                            modifier = Modifier
+                                .fillParentMaxWidth()
+                                .constrainAs(userItem) {
 //                                        start.linkTo(parent.start, 5.dp)
 //                                        end.linkTo(parent.end, 5.dp)
-                                    }
-                                    .clickable {
-                                        ToastUtil.showToast(
-                                            context,
-                                            "the card is clicked ${message.sent}"
+                                }
+
+                                .padding(8.dp)
+
+
+                        ) {
+                            val currentSent = viewModel.getUserbyUid(message.sent)?.userName
+                            ListItem(
+
+                                text = {
+
+                                    Text(
+                                        text = message.message,
+
+                                        style = TextStyle(
+                                            fontFamily = FontFamily.Serif, fontSize = 20.sp,
+                                            fontWeight = FontWeight.Bold
                                         )
-//                                        navController.navigate(Routes.ChatView.route)
-                                    }
-                                    .padding(8.dp)
 
-
-                            ) {
-
-                                ListItem(
-
-                                    text = {
-
-                                        Text(
-                                            text = "${message.message}",
-
-                                            style = TextStyle(
-                                                fontFamily = FontFamily.Serif, fontSize = 20.sp,
-                                                fontWeight = FontWeight.Bold
-                                            )
-
+                                    )
+                                }, secondaryText = {
+                                    Text(
+                                        text = "Sent From: $currentSent",
+                                        style = TextStyle(
+                                            fontFamily = FontFamily.Serif, fontSize = 15.sp,
+                                            fontWeight = FontWeight.Light, color = Color.DarkGray
                                         )
-                                    },secondaryText = {
-                                        Text(
-                                            text = "sent ${message.sent}",
-                                            style = TextStyle(
-                                                fontFamily = FontFamily.Serif, fontSize = 15.sp,
-                                                fontWeight = FontWeight.Light, color = Color.DarkGray
-                                            )
-                                        )
-                                    }
+                                    )
+                                }, icon = {
 
-                                    ,icon = {
-
-                                    })
-                            }
-                        })
-
+                                })
+                        }
+                    }
 
 
                 }
@@ -199,18 +195,18 @@ fun Top(user: User){
 @Composable
 fun AddMessage(user:User,viewModel: MessageListViewModel) {
     Box(
-        modifier = Modifier.padding(20.dp),
+        modifier = Modifier.background(Color.White).padding(bottom = 10.dp)
 
         ) {
 
         var message = remember { mutableStateOf(TextFieldValue()) }
-        val interactionSource = remember { MutableInteractionSource() }
-        val pressed by interactionSource.collectIsPressedAsState()
+
+
 
 //
 //        Text(text = "${user.userName}", style = TextStyle(fontSize = 40.sp, fontFamily = FontFamily.Cursive))
 
-        Spacer(modifier = Modifier.height(20.dp))
+        Spacer(modifier = Modifier.height(20.dp).padding(10.dp))
         OutlinedTextField(
             value = message.value,
             onValueChange = {message.value=it},
@@ -241,6 +237,7 @@ fun AddMessage(user:User,viewModel: MessageListViewModel) {
                 }
             }
         )
+
 
 
     }
