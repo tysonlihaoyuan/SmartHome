@@ -10,6 +10,7 @@ sealed class Routes(val route: String) {
     object ChatChanel: Routes("ChatChanel")
     object FriendList: Routes("Friends")
     object AddFriend: Routes("AddFriend")
+    object ChatView: Routes("ChatView")
 
 
 

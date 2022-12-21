@@ -12,6 +12,7 @@ import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
@@ -25,17 +26,21 @@ import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.lifecycle.MutableLiveData
 import androidx.navigation.NavHostController
+import com.example.chatroom.Activities.Routes
 import com.example.chatroom.Utility.ToastUtil
 import com.example.chatroom.ViewModel.Data.ChatChannel
 import com.example.chatroom.ViewModel.Data.User
-import com.example.chatroom.ViewModel.MessageListViewModel
+import com.example.chatroom.ViewModel.ChannelListViewModel
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.launch
 
 @Composable
 //fun FriendLsit(navController: NavHostController, viewModel: AddFriendListViewModel)
 
 
 
-fun chatChannelPage(navController: NavHostController, viewModel: MessageListViewModel, channelListLiveData: MutableLiveData<List<ChatChannel>>, userLiveData: MutableLiveData<User?>,context:Context)
+fun chatChannelPage(navController: NavHostController, viewModel: ChannelListViewModel, channelListLiveData: MutableLiveData<List<ChatChannel>>, userLiveData: MutableLiveData<User?>,context:Context)
 {
 
 
@@ -55,17 +60,18 @@ fun chatChannelPage(navController: NavHostController, viewModel: MessageListView
     // performance optimization. It is inspired from existing frameworks like React.
     val channellist by channelListLiveData.observeAsState(initial = emptyList())
     val user by userLiveData.observeAsState(initial = User())
+
     // Since Jetpack Compose uses the declarative way of programming, we can easily decide what
     // needs to shows vs hidden based on which branch of code is being executed. In this example,
     // if the personList returned by the live data is empty, we want to show a loading indicator,
     // otherwise we want show the appropriate list. So we run the appropriate composable based on
     // the branch of code executed and that takes care of rendering the right views.
-    if (channellist.isEmpty()) {
-        channnelLiveDataLoadingComponent()
-    } else {
-        user?.let { ScaffoldFrame(contentFunction = { showChannelList(channellist, it,context,viewModel,navController) }, navController = navController) }
-    }
-
+//    if (channellist.isEmpty()) {
+//        channnelLiveDataLoadingComponent()
+//    } else {
+//        user?.let { ScaffoldFrame(contentFunction = { showChannelList(channellist, it,context,viewModel,navController) }, navController = navController) }
+//    }
+    user?.let { ScaffoldFrame(contentFunction = { showChannelList(channellist, it,context,viewModel,navController) }, navController = navController) }
 
 
 
@@ -93,7 +99,7 @@ fun channnelLiveDataLoadingComponent() {
 
 @OptIn(ExperimentalMaterialApi::class, ExperimentalFoundationApi::class)
 @Composable
-fun showChannelList(channelList: List<ChatChannel>,user:User,context: Context,viewModel: MessageListViewModel,navController: NavHostController) {
+fun showChannelList(channelList: List<ChatChannel>,user:User,context: Context,viewModel: ChannelListViewModel,navController: NavHostController) {
     Surface(color = Color.White) {
         ConstraintLayout(
             modifier = Modifier.fillMaxSize(),
@@ -120,6 +126,11 @@ fun showChannelList(channelList: List<ChatChannel>,user:User,context: Context,vi
                     items(
                         items = channelList, itemContent = { channel ->
 
+
+                            val currentRecevier = viewModel.mUserList.value?.let {
+                                viewModel.matchUserbyUid(
+                                    it,viewModel.showChannelName(channel.members))
+                            }
                             Card(
                                 shape = RoundedCornerShape(4.dp),
                                 backgroundColor = White,
@@ -134,6 +145,8 @@ fun showChannelList(channelList: List<ChatChannel>,user:User,context: Context,vi
                                             context,
                                             "the card is clicked ${channel.channelUid}"
                                         )
+                                        viewModel.mUser.postValue(currentRecevier)
+                                        navController.navigate(Routes.ChatView.route)
                                     }
                                     .padding(8.dp)
 
@@ -144,20 +157,24 @@ fun showChannelList(channelList: List<ChatChannel>,user:User,context: Context,vi
 
                                     text = {
 
-                                        Text(
-                                            text = "${viewModel.getUserbyUid(viewModel.showChannelName(channel.members))?.userName}",
+                                        if (currentRecevier != null) {
+                                            Text(
 
-                                            style = TextStyle(
-                                                fontFamily = FontFamily.Serif, fontSize = 20.sp,
-                                                fontWeight = FontWeight.Bold
+                                                text = currentRecevier.userName,
+
+                                                style = TextStyle(
+                                                    fontFamily = FontFamily.Serif, fontSize = 20.sp,
+                                                    fontWeight = FontWeight.Bold
+                                                )
+
                                             )
-                                        )
+                                        }
                                     },secondaryText = {
                                         Text(
                                             text = "Message ${viewModel.showFirstMessage(channel.messaesList)}",
                                             style = TextStyle(
                                                 fontFamily = FontFamily.Serif, fontSize = 15.sp,
-                                                fontWeight = FontWeight.Light, color = androidx.compose.ui.graphics.Color.DarkGray
+                                                fontWeight = FontWeight.Light, color = Color.DarkGray
                                             )
                                         )
                                     }

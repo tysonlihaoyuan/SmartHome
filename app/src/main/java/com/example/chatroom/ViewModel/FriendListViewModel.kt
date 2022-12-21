@@ -1,77 +1,55 @@
 package com.example.chatroom.ViewModel
 
+import android.content.ContentValues
 import android.content.ContentValues.TAG
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.example.chatroom.ViewModel.Data.ChatChannel
+import com.example.chatroom.ViewModel.Data.Message
 import com.example.chatroom.ViewModel.Data.User
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.*
 import com.google.firebase.database.ktx.database
 import com.google.firebase.database.ktx.getValue
-
 import com.google.firebase.ktx.Firebase
 
 
 class AddFriendListViewModel : ViewModel() {
-//    val db = Firebase.firestore
-    private lateinit var userRef: DatabaseReference
-//    private lateinit var databaseReference: DatabaseReference
+
     private lateinit var userListener: ValueEventListener
     val mUserList:MutableLiveData<List<User>> = MutableLiveData()
     val userList:ArrayList<User> = ArrayList()
+    val database = Firebase.database
+    private var userRef : Query = database.getReference("Users").orderByChild("lastUpdate/timestamp")
+    private var currentUser: FirebaseAuth
+    val mAllChannelMap:MutableLiveData<Map<List<String>,String>> =MutableLiveData()
 
     init{
         Log.d(TAG, "addFriendviwmodel is created")
-//        databaseReference = Firebase.database.reference
-
+        currentUser = Firebase.auth
         loadUserList()
+
     }
 
 
-    fun loadUserList() {
+    private fun loadUserList() {
 
-//        db.collection("user").addSnapshotListener { snapshot, e ->
-//            if (e != null) {
-//                Log.w(TAG, "Listen failed.", e)
-//                return@addSnapshotListener
-//            }
-//
-//            val currentUserList:ArrayList<User> = ArrayList<User>()
-//            snapshot?.documents?.forEach {
-//                it.toObject(User::class.java)?.let { user ->
-//                    Log.d(TAG, "" + user.userName)
-//                    currentUserList.add(user)
-//                    userList.add(user)
-//                }
-//            }
-//            mUserList.postValue(currentUserList)
-//            Log.d(TAG, "Current userList: $mUserList")
-//        }
-//        userRef = databaseReference.child
-        val database = Firebase.database
-        val userRef = database.getReference("Users").orderByChild("lastUpdate/timestamp")
-//        Log.d(TAG, "number of users ${userRef.}")
         userListener = object : ValueEventListener {
 
             override fun onDataChange(dataSnapshot: DataSnapshot) {
-                // New data at this path. This method will be called after every change in the
-                // data at this path or a subpath.
 
-                Log.d(TAG, "number of users ${dataSnapshot.childrenCount}")
-                val currentUserList: ArrayList<User> = ArrayList<User>()
+                val currentUserList: ArrayList<User> = ArrayList()
                 dataSnapshot.children.forEach { child ->
-                    // Extract Message object from the DataSnapshot
+
                     val user: User? = child.getValue<User>()
-
-
                     if (user != null) {
 
                         currentUserList.add(0,user)
                         userList.add(0,user)
+                        Log.w(TAG, "user list: ${currentUserList}")
                     }
-
 
                 }
                 mUserList.postValue(currentUserList)
@@ -87,12 +65,84 @@ class AddFriendListViewModel : ViewModel() {
 
         userRef.addValueEventListener(userListener)
     }
-        fun getUserlist(): List<User> {
-            loadUserList()
-            Log.d(TAG, "Current cites in CA: $mUserList")
-            return userList
 
+     fun loadChannelList() {
+
+        val messageRef = database.getReference("ChatRoom")
+
+        messageRef.addListenerForSingleValueEvent(  object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                val channelMap = emptyMap<List<String>,String>().toMutableMap()
+                snapshot.children.forEach { child ->
+                    // Extract Message object from the DataSnapshot
+                    val chatChannel: ChatChannel? = child.getValue<ChatChannel>()
+                    val memberlist = chatChannel?.members as ArrayList<String>
+                    if (chatChannel != null) {
+                        channelMap[memberlist]= chatChannel.channelUid
+                    }
+
+                    Log.w(TAG, "get all Channel to map $channelMap")
+                }
+
+                mAllChannelMap.postValue(channelMap)
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                Log.w(TAG, "messages:onCancelled: ${error.message}")
+            }
+
+        })
+//
+    }
+    fun checkExistingChannel(toUserUid: String, channelMap : Map<List<String>,String>):Boolean{
+
+        val newChannelMembers: MutableList<String> =
+            mutableListOf(currentUser.uid.toString(), toUserUid)
+        newChannelMembers.sort()
+        if (channelMap[newChannelMembers] != null){
+            Log.d(TAG, "chatChannel is existing ${channelMap[newChannelMembers]}")
+            return true
+        }else {
+            Log.d(TAG, "chatChannel is not existing ${channelMap[newChannelMembers]}")
+            return false
         }
+    }
+    fun createChannel(toUserUid: String, channelMap : Map<List<String>,String>){
+        val newChannelMembers: MutableList<String> =
+            mutableListOf(currentUser.uid.toString(), toUserUid)
+        newChannelMembers.sort()
+
+
+        val database = Firebase.database
+        val messageRef = database.getReference("ChatRoom")
+        val newChannelUid = messageRef.push().key.toString()
+        val newChannelMessageList: MutableList<Message> = mutableListOf()
+        val newChannelCreatedTimeStamp: HashMap<String?, Any?> = HashMap()
+        // store members' UID
+
+
+
+        val newChannel = ChatChannel(
+            newChannelUid,
+            newChannelMessageList,
+            newChannelCreatedTimeStamp,
+            newChannelMembers
+        )
+
+        messageRef.child(newChannelUid).setValue(newChannel).addOnCompleteListener() {
+            Log.d(TAG, "sucessful add chatChannel ${newChannel.channelUid}")
+        }.addOnFailureListener {
+            Log.d(TAG, "cannot add chatChannel")
+        }
+
+
+
+    }
+
+
+
+
+
 
 //    fun updateTimestamp(){
 //        val database = Firebase.database

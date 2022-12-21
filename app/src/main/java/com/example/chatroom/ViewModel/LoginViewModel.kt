@@ -1,10 +1,13 @@
 package com.example.chatroom.ViewModel
 
+import android.app.Activity
 import android.content.ContentValues
 import android.content.ContentValues.TAG
 import android.content.Context
 import android.util.Log
 import android.widget.Toast
+import androidx.compose.ui.platform.LocalContext
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.navigation.NavHostController
 import com.example.chatroom.Activities.Routes
@@ -18,14 +21,14 @@ import com.google.firebase.ktx.Firebase
 class LoginViewModel:ViewModel(){
 
     private var auth: FirebaseAuth
-
+    var mlogoutAppFlag: MutableLiveData<Boolean> = MutableLiveData()
 
     init {
         Log.d(TAG, "RegisterViewModel is created")
 
         auth = FirebaseAuth.getInstance()
         Log.d(TAG, "init email is  ${auth.currentUser}")
-
+        mlogoutAppFlag.value=false
 
     }
 
@@ -70,8 +73,10 @@ class LoginViewModel:ViewModel(){
             }
 
     }
-    fun logout(navController: NavHostController){
+    suspend fun logout(): Boolean? {
         Firebase.auth.signOut()
-        navController.navigate(Routes.Login.route)
+        mlogoutAppFlag.postValue(true)
+
+        return mlogoutAppFlag.value
     }
 }
