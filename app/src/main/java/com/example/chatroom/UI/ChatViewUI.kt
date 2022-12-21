@@ -35,13 +35,14 @@ import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
 import androidx.lifecycle.MutableLiveData
 import androidx.navigation.NavHostController
+import com.example.chatroom.Utility.FirebaseFactory
 import com.example.chatroom.Utility.ToastUtil
 import com.example.chatroom.ViewModel.Data.Message
 import com.example.chatroom.ViewModel.Data.User
-import com.example.chatroom.ViewModel.MessageListViewModel
+import com.example.chatroom.ViewModel.ChannelListViewModel
 
 @Composable
-fun ChatViewPage(navController: NavHostController, context: Context, viewModel:MessageListViewModel, userLiveData: MutableLiveData<User?>,messageLiveData:MutableLiveData<List<Message>>) {
+fun ChatViewPage(navController: NavHostController, context: Context, viewModel:ChannelListViewModel, userLiveData: MutableLiveData<User?>,messageLiveData:MutableLiveData<List<Message>>) {
 
     val messageList by messageLiveData.observeAsState(initial = emptyList())
     val user by userLiveData.observeAsState(initial = User())
@@ -52,7 +53,7 @@ fun ChatViewPage(navController: NavHostController, context: Context, viewModel:M
     // otherwise we want show the appropriate list. So we run the appropriate composable based on
     // the branch of code executed and that takes care of rendering the right views.
     user?.let { viewModel.getCurrentMessageHistory(it.uid) }
-////        Log.d(ContentValues.TAG, "user is existing  ${user?.userName}")
+//        Log.d(ContentValues.TAG, "user is existing in virw  ${user?.userName}")
 //    Log.d(ContentValues.TAG, "message is existing  ${messageList}")
     ScaffoldFrameTop(contentFunction = {
         user?.let {
@@ -60,13 +61,13 @@ fun ChatViewPage(navController: NavHostController, context: Context, viewModel:M
             messageList = messageList ,
             user = it,
             context =context ,
-            viewModel = MessageListViewModel(),
+            viewModel = ChannelListViewModel(firebaseFactory = FirebaseFactory()),
             navController = navController
             )
         }
 
 
-    },  bottomFunction= { user?.let { AddMessage(user = it, viewModel = MessageListViewModel()) } }, topbarFunction = {user?.let { Top(
+    },  bottomFunction= { user?.let { AddMessage(user = it, viewModel = ChannelListViewModel(firebaseFactory = FirebaseFactory())) } }, topbarFunction = {user?.let { Top(
         user = it
     ) }})
 
@@ -89,7 +90,7 @@ fun MessageLiveDataLoadingComponent() {
 }
 @OptIn(ExperimentalMaterialApi::class, ExperimentalFoundationApi::class)
 @Composable
-fun showMessageList(messageList: List<Message>, user:User, context: Context, viewModel: MessageListViewModel, navController: NavHostController) {
+fun showMessageList(messageList: List<Message>, user:User, context: Context, viewModel: ChannelListViewModel, navController: NavHostController) {
 
     Surface(color = Color.White) {
         ConstraintLayout(
@@ -193,7 +194,7 @@ fun Top(user: User){
 
 
 @Composable
-fun AddMessage(user:User,viewModel: MessageListViewModel) {
+fun AddMessage(user:User,viewModel: ChannelListViewModel) {
     Box(
         modifier = Modifier.background(Color.White).padding(bottom = 10.dp)
 

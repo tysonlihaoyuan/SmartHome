@@ -30,10 +30,12 @@ import com.example.chatroom.ViewModel.Data.User
 import com.example.chatroom.ViewModel.LoginViewModel
 
 import androidx.constraintlayout.compose.ConstraintLayout
+import com.example.chatroom.Activities.Routes
+import com.example.chatroom.ViewModel.ChannelListViewModel
 
 @Composable
 //fun FriendLsit(navController: NavHostController, viewModel: AddFriendListViewModel)
-fun FriendLsit(navController: NavHostController, viewModel: AddFriendListViewModel, personListLiveData: MutableLiveData<List<User>>, context:Context)
+fun FriendLsit(navController: NavHostController, viewModel: AddFriendListViewModel,userviewModel: ChannelListViewModel,userLiveData: MutableLiveData<User?>,personListLiveData: MutableLiveData<List<User>>, context:Context)
 {
 
 
@@ -52,6 +54,8 @@ fun FriendLsit(navController: NavHostController, viewModel: AddFriendListViewMod
         // will be redraw while the rest remain unchanged. This ensures efficiency and is a
         // performance optimization. It is inspired from existing frameworks like React.
         val personList by personListLiveData.observeAsState(initial = emptyList())
+        val user by userLiveData.observeAsState(initial = User())
+        viewModel.loadChannelList()
         // Since Jetpack Compose uses the declarative way of programming, we can easily decide what
         // needs to shows vs hidden based on which branch of code is being executed. In this example,
         // if the personList returned by the live data is empty, we want to show a loading indicator,
@@ -60,7 +64,7 @@ fun FriendLsit(navController: NavHostController, viewModel: AddFriendListViewMod
         if (personList.isEmpty()) {
             LiveDataLoadingComponent()
         } else {
-            ScaffoldFrame(contentFunction = { showFriendList(personList,context,viewModel,navController) }, navController = navController)
+            ScaffoldFrame(contentFunction = { showFriendList(personList,context,viewModel,userviewModel,navController) }, navController = navController)
         }
 
 
@@ -92,44 +96,6 @@ fun LiveDataLoadingComponent() {
     }
 }
 
-//@Composable
-//fun Topbar(viewModel: AddFriendListViewModel,navController: NavHostController) {
-//    Surface(color = Color.White) {
-//        ConstraintLayout(
-////            modifier = Modifier.fillMaxSize(),
-//        ) {
-//            val (addFriendButton, topicText) = createRefs()
-//            Text(
-//                text = "ChatRoom",
-//                color = Color.Black,
-//                style = MaterialTheme.typography.h4,
-//                fontWeight = FontWeight.SemiBold,
-//                modifier = Modifier
-//                    .constrainAs(topicText) {
-//                        start.linkTo(parent.start, 20.dp)
-////                        top.linkTo(parent.top, 10.dp)
-//                    }
-//
-//            )
-//
-////            Button(
-////                onClick = {  navController.navigate(Routes.ChatChanel.route)},
-////                modifier = Modifier
-////                    .constrainAs(addFriendButton) {
-////                        end.linkTo(parent.end, 10.dp)
-//////                        top.linkTo(parent.top, 10.dp)
-////
-////                    }
-////                    .width(50.dp)
-////                    .height(35.dp)
-////
-////            ) {
-////                Text(text = "+")
-////            }
-//
-//        }
-//    }
-//}
 
 
 
@@ -139,8 +105,9 @@ fun showFriendList(
     personList: List<User>,
     context: Context,
     viewModel: AddFriendListViewModel,
+    userviewModel: ChannelListViewModel,
     navController: NavHostController) {
-    Surface(color = Color.White) {
+    Surface(color = White) {
         ConstraintLayout(
             modifier = Modifier.fillMaxSize(),
         ) {
@@ -170,14 +137,31 @@ fun showFriendList(
                                 modifier = Modifier
                                     .fillParentMaxWidth()
                                     .constrainAs(userItem) {
-//                                        start.linkTo(parent.start, 5.dp)
-//                                        end.linkTo(parent.end, 5.dp)
+//
                                     }
                                     .clickable {
-                                        ToastUtil.showToast(
-                                            context,
-                                            "the card is clicked ${person.userName}"
-                                        )
+
+                                        val sucessCreatedChannel = viewModel.mAllChannelMap.value?.let {
+                                            viewModel.checkExistingChannel(person.uid,
+                                                it
+                                            )
+                                        }
+                                        //Todo: complete direct to target chat channel
+                                        if (sucessCreatedChannel == false){
+                                            viewModel.mAllChannelMap.value?.let {
+                                                viewModel.createChannel(person.uid,
+                                                    it
+                                                )
+                                            }
+                                        }else{
+                                            userviewModel.mUser.postValue(person)
+                                            navController.navigate(Routes.ChatView.route)
+//                                            ToastUtil.showToast(
+//                                            context,
+//                                            "the card is clicked ${person.userName}"
+//                                        )
+                                        }
+
                                     }
                                     .padding(8.dp)
 
@@ -201,7 +185,7 @@ fun showFriendList(
                                             text = "Email: ${person.useremail}",
                                             style = TextStyle(
                                                 fontFamily = FontFamily.Serif, fontSize = 15.sp,
-                                                fontWeight = FontWeight.Light, color = androidx.compose.ui.graphics.Color.DarkGray
+                                                fontWeight = FontWeight.Light, color = Color.DarkGray
                                             )
                                         )
                                     }
