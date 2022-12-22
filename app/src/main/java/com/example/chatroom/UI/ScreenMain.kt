@@ -13,7 +13,7 @@ import androidx.navigation.compose.composable
 import com.example.chatroom.Activities.RegisterActivity
 import com.example.chatroom.Activities.Routes
 import com.example.chatroom.Utility.FirebaseFactory
-import com.example.chatroom.ViewModel.AddFriendListViewModel
+import com.example.chatroom.ViewModel.FriendListViewModel
 
 import com.example.chatroom.ViewModel.LoginViewModel
 import com.example.chatroom.ViewModel.ChannelListViewModel
@@ -25,7 +25,7 @@ import com.example.chatroom.ViewModel.RegisterViewModel
         val navController = rememberNavController()
         val RegisterviewModel = RegisterViewModel()
         val LoginviewModel = LoginViewModel()
-        val AddFriendviewModel = AddFriendListViewModel()
+        val AddFriendviewModel = FriendListViewModel()
         val ChannelListViewModel = ChannelListViewModel(firebaseFactory = FirebaseFactory())
         val context = LocalContext.current
 //        val activity = AppCompatActivity

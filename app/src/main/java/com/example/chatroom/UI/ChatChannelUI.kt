@@ -36,7 +36,7 @@ import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 
 @Composable
-//fun FriendLsit(navController: NavHostController, viewModel: AddFriendListViewModel)
+//fun FriendLsit(navController: NavHostController, viewModel: FriendListViewModel)
 
 
 

@@ -25,7 +25,7 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.MutableLiveData
 import androidx.navigation.NavHostController
 import com.example.chatroom.Utility.ToastUtil
-import com.example.chatroom.ViewModel.AddFriendListViewModel
+import com.example.chatroom.ViewModel.FriendListViewModel
 import com.example.chatroom.ViewModel.Data.User
 import com.example.chatroom.ViewModel.LoginViewModel
 
@@ -34,8 +34,8 @@ import com.example.chatroom.Activities.Routes
 import com.example.chatroom.ViewModel.ChannelListViewModel
 
 @Composable
-//fun FriendLsit(navController: NavHostController, viewModel: AddFriendListViewModel)
-fun FriendLsit(navController: NavHostController, viewModel: AddFriendListViewModel,userviewModel: ChannelListViewModel,userLiveData: MutableLiveData<User?>,personListLiveData: MutableLiveData<List<User>>, context:Context)
+//fun FriendLsit(navController: NavHostController, viewModel: FriendListViewModel)
+fun FriendLsit(navController: NavHostController, friendlistviewModel: FriendListViewModel,userviewModel: ChannelListViewModel,userLiveData: MutableLiveData<User?>,personListLiveData: MutableLiveData<List<User>>, context:Context)
 {
 
 
@@ -55,7 +55,9 @@ fun FriendLsit(navController: NavHostController, viewModel: AddFriendListViewMod
         // performance optimization. It is inspired from existing frameworks like React.
         val personList by personListLiveData.observeAsState(initial = emptyList())
         val user by userLiveData.observeAsState(initial = User())
-        viewModel.loadChannelList()
+        friendlistviewModel.loadUserList()
+        friendlistviewModel.loadChannelList()
+
         // Since Jetpack Compose uses the declarative way of programming, we can easily decide what
         // needs to shows vs hidden based on which branch of code is being executed. In this example,
         // if the personList returned by the live data is empty, we want to show a loading indicator,
@@ -64,7 +66,7 @@ fun FriendLsit(navController: NavHostController, viewModel: AddFriendListViewMod
         if (personList.isEmpty()) {
             LiveDataLoadingComponent()
         } else {
-            ScaffoldFrame(contentFunction = { showFriendList(personList,context,viewModel,userviewModel,navController) }, navController = navController)
+            ScaffoldFrame(contentFunction = { showFriendList(personList,context,friendlistviewModel,userviewModel,navController) }, navController = navController)
         }
 
 
@@ -104,7 +106,7 @@ fun LiveDataLoadingComponent() {
 fun showFriendList(
     personList: List<User>,
     context: Context,
-    viewModel: AddFriendListViewModel,
+    friendlistviewModel: FriendListViewModel,
     userviewModel: ChannelListViewModel,
     navController: NavHostController) {
     Surface(color = White) {
@@ -141,15 +143,15 @@ fun showFriendList(
                                     }
                                     .clickable {
 
-                                        val sucessCreatedChannel = viewModel.mAllChannelMap.value?.let {
-                                            viewModel.checkExistingChannel(person.uid,
+                                        val sucessCreatedChannel = friendlistviewModel.mAllChannelMap.value?.let {
+                                            friendlistviewModel.checkExistingChannel(person.uid,
                                                 it
                                             )
                                         }
                                         //Todo: complete direct to target chat channel
                                         if (sucessCreatedChannel == false){
-                                            viewModel.mAllChannelMap.value?.let {
-                                                viewModel.createChannel(person.uid,
+                                            friendlistviewModel.mAllChannelMap.value?.let {
+                                                friendlistviewModel.createChannel(person.uid,
                                                     it
                                                 )
                                             }
@@ -206,53 +208,6 @@ fun showFriendList(
         }
     }
 }
-//
-//@SuppressLint("UnusedMaterialScaffoldPaddingParameter")
-//@Composable
-//fun fullFriendList( personList: List<User>,
-//                    context: Context,
-//                    viewModel: AddFriendListViewModel,
-//                    navController: NavHostController) {
-//    val scaffoldState = rememberScaffoldState(rememberDrawerState(DrawerValue.Closed))
-//    Scaffold(
-//        scaffoldState = scaffoldState,
-//        topBar = { Topbar(viewModel = viewModel, navController = navController ) },
-//        bottomBar = { BottomNavigationBar(navController) },
-//
-//        floatingActionButtonPosition = FabPosition.End,
-//        floatingActionButton = { FloatingActionButton(onClick = {}){
-//            Icon(imageVector = Icons.Default.Add, contentDescription = "fab icon")
-//        } },
-////        drawerContent = { MyDrawerConten(drawers) },
-////       content = {showFriendList(
-////           personList = personList,
-////           context = context,
-////           viewModel = viewModel,
-////           navController =navController
-////       )}
-//
-//    ){
-////            paddingValues ->
-////        // Screen content
-////        Column(modifier = Modifier
-////
-////            .padding(paddingValues)
-////            .verticalScroll(rememberScrollState())) {
-////
-////            Text("Bottom app bar padding:  $paddingValues")
-////
-////            repeat(50) {
-////                Text(it.toString())
-////            }
-////        }
-//        showFriendList(
-//           personList = personList,
-//           context = context,
-//           viewModel = viewModel,
-//           navController =navController
-//       )
-//    }
-//}
 
 
 

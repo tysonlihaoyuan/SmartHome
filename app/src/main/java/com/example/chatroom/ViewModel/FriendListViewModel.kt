@@ -16,7 +16,7 @@ import com.google.firebase.database.ktx.getValue
 import com.google.firebase.ktx.Firebase
 
 
-class AddFriendListViewModel : ViewModel() {
+class FriendListViewModel : ViewModel() {
 
     private lateinit var userListener: ValueEventListener
     val mUserList:MutableLiveData<List<User>> = MutableLiveData()
@@ -29,12 +29,12 @@ class AddFriendListViewModel : ViewModel() {
     init{
         Log.d(TAG, "addFriendviwmodel is created")
         currentUser = Firebase.auth
-        loadUserList()
+
 
     }
 
 
-    private fun loadUserList() {
+     fun loadUserList() {
 
         userListener = object : ValueEventListener {
 
@@ -112,16 +112,11 @@ class AddFriendListViewModel : ViewModel() {
             mutableListOf(currentUser.uid.toString(), toUserUid)
         newChannelMembers.sort()
 
-
         val database = Firebase.database
         val messageRef = database.getReference("ChatRoom")
         val newChannelUid = messageRef.push().key.toString()
         val newChannelMessageList: MutableList<Message> = mutableListOf()
         val newChannelCreatedTimeStamp: HashMap<String?, Any?> = HashMap()
-        // store members' UID
-
-
-
         val newChannel = ChatChannel(
             newChannelUid,
             newChannelMessageList,
@@ -141,35 +136,6 @@ class AddFriendListViewModel : ViewModel() {
 
 
 
-
-
-
-//    fun updateTimestamp(){
-//        val database = Firebase.database
-//        val userRef = database.getReference("Users")
-//
-//        val map = HashMap<Any?, Any?>()
-//        map["timestamp"] = ServerValue.TIMESTAMP
-//        map.put("timestamp", ServerValue.TIMESTAMP);
-//        Log.d(TAG, "curent time  ${map["timestamp"]}")
-//        val valueEventListener: ValueEventListener = object : ValueEventListener {
-//            override fun onDataChange(dataSnapshot: DataSnapshot) {
-//                for (ds in dataSnapshot.children) {
-//                    ds.child("lastUpdate").ref.setValue(map)
-//                    Log.d(TAG, "curent time  ${map["timestamp"]}")
-////                    val username = ds.child("lastUpdate").setValue()
-////                    Log.d(TAG, "current user ${username}")
-//                }
-//            }
-//
-//            override fun onCancelled( databaseError: DatabaseError) {
-//
-//
-//                Log.d(TAG, "error add timestamp")
-//            }
-//        }
-//        userRef.addListenerForSingleValueEvent(valueEventListener)
-//    }
  fun updateUsertimestamp(){
         val database = Firebase.database
         val userRef = database.getReference("Users")
