@@ -11,7 +11,9 @@ sealed class Routes(val route: String) {
     object FriendList: Routes("FriendList")
     object AddFriend: Routes("AddFriend")
     object ChatView: Routes("ChatView")
-
+    object Authenticate:Routes("Authenticate")
+    object ChannelAndFriend:Routes("ChannelAndFriend")
+    object Root_Graph:Routes("Root_Graph")
 
     fun withArgs(vararg args:String):String{
         return buildString {

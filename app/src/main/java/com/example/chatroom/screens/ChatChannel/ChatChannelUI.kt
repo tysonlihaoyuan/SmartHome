@@ -24,13 +24,20 @@ import com.example.chatroom.Data.ChatChannel
 import com.example.chatroom.screens.ScaffoldFrame
 
 @Composable
-fun ChatChannelPage(navController: NavHostController, viewModel: ChatChannelViewModel= hiltViewModel(), context : Context) {
-//    Log.d(ContentValues.TAG, "ChatChanel is $viewModel ")
+fun ChatChannelPage(
+    navController: NavHostController,
+    viewModel: ChatChannelViewModel = hiltViewModel()
+) {
     val channalList by viewModel.channelListLiveData.observeAsState(initial = emptyList())
-//    val channalMap  by viewModel.channelMapLiveData.observeAsState(initial = emptyMap())
-    viewModel.loadFriendList()
-    viewModel.loadChannelList()
-    ScaffoldFrame(contentFunction = { showChannelList(channalList,viewModel,navController = navController) }, navController = navController)
+//    viewModel.loadFriendList()
+//    viewModel.loadChannelList()
+    ScaffoldFrame(contentFunction = {
+        showChannelList(
+            channalList,
+            viewModel,
+            navController = navController
+        )
+    }, navController = navController)
 
 
 }
