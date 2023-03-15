@@ -6,7 +6,7 @@ data class User(
     val userEmail: String = "",
     val userPassword: String = "",
     val uid: String = "",
-
+    val profilePictureUrl: String? = null,
 
     val lastUpdate: HashMap<String?, Any?> =HashMap(),
     val registrationTokens: MutableList<String> = mutableListOf(),

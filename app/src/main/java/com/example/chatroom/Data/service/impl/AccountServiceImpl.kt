@@ -1,24 +1,25 @@
 package com.example.chatroom.Data.service.impl
 
+
+import android.graphics.Bitmap
+import androidx.compose.ui.graphics.ImageBitmap
 import com.example.chatroom.Data.User
 import com.example.chatroom.Data.service.AccountService
-
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ServerValue
-import kotlinx.coroutines.channels.awaitClose
+import com.google.firebase.storage.FirebaseStorage
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.flow
-
-
 import kotlinx.coroutines.tasks.await
+import java.io.ByteArrayOutputStream
 import javax.inject.Inject
-import com.example.chatroom.R.string as AppText
 
 class AccountServiceImpl @Inject constructor(
     private val auth: FirebaseAuth,
-    private val firebaseRealtime: FirebaseDatabase
+    private val firebaseRealtime: FirebaseDatabase,
+    private val firebaseStorage: FirebaseStorage
+
 ) : AccountService {
     override val currentUserId: String
         get() = auth.currentUser?.uid.orEmpty()
@@ -79,6 +80,21 @@ class AccountServiceImpl @Inject constructor(
 
     override suspend fun signOut() {
         auth.signOut()
+    }
+
+    override suspend fun selectProfile() {
+
+
+    }
+
+    override suspend fun uploadProfilePicture(bitmap: Bitmap) {
+        val profileName = auth.currentUser!!.uid +".jpg"
+        val imageRef= firebaseStorage.reference.child(profileName)
+        val baos =ByteArrayOutputStream()
+        bitmap.compress(Bitmap.CompressFormat.JPEG,100,baos)
+        val data = baos.toByteArray()
+
+
     }
 
 

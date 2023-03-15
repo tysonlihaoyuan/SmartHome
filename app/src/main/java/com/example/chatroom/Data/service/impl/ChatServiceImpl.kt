@@ -53,6 +53,7 @@ class ChatServiceImpl @Inject constructor(
                         }
                     }
                 }
+
                 messageListMutableLiveData.postValue(currentMessageList)
             }
 
@@ -80,6 +81,7 @@ class ChatServiceImpl @Inject constructor(
         timestamp["timestamp"] = ServerValue.TIMESTAMP
         timestamp.put("timestamp", ServerValue.TIMESTAMP);
         val newMessage = Message(sender, receiver, message, timestamp)
+        Log.w(ContentValues.TAG, "message added before list: ${messageList}")
         messageList.add(newMessage)
         messageListMutableLiveData.postValue(messageList)
 
@@ -94,11 +96,11 @@ class ChatServiceImpl @Inject constructor(
                     val channel: ChatChannel? = child.getValue<ChatChannel>()
                     val memberlist = channel?.memberList
                     if (channel != null) {
-                        Log.w(ContentValues.TAG, "channel is found ${channel.channelUid}}")
+//                        Log.w(ContentValues.TAG, "channel is found ${channel.channelUid}}")
 
                         if (memberlist != null) {
-                            Log.w(ContentValues.TAG, "member is found ${auth.uid}},${memberlist.contains(auth.uid)}")
-                            Log.w(ContentValues.TAG, "member is found ${receiver},${memberlist.contains(receiver)}")
+//                            Log.w(ContentValues.TAG, "member is found ${auth.uid}},${memberlist.contains(auth.uid)}")
+//                            Log.w(ContentValues.TAG, "member is found ${receiver},${memberlist.contains(receiver)}")
                             if (memberlist.contains(auth.uid) and memberlist.contains(receiver)) {
                                 Log.w(ContentValues.TAG, "member inner is found ${memberlist[0]}}")
 

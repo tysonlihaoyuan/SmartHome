@@ -42,8 +42,7 @@ fun ChatViewPage(chatChannelviewModel: ChatChannelViewModel, chatViewModelviewMo
 
     val messageList by chatViewModelviewModel.messageListLiveData.observeAsState(initial = emptyList())
 
-//    chatChannelviewModel.loadChannelList()
-//    chatChannelviewModel.loadFriendList()
+
 
     Log.d(ContentValues.TAG, "page is load  ${chatChannelviewModel.targetUserLiveData.value}")
      chatViewModelviewModel.getMessageList(targetUserUid)

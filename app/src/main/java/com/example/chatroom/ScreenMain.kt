@@ -42,12 +42,12 @@ fun ScreenMain() {
             composable(
                 route = Routes.Login.route
             ) {
-                LoginPage(navController = navHostController, context = context)
+                LoginPage(navController = navHostController,)
             }
             composable(
                 route = Routes.SignUp.route
             ) {
-                RegisterPage(navController = navHostController, context = context)
+                RegisterPage(navController = navHostController)
             }
         }
 

@@ -6,6 +6,8 @@ import com.google.firebase.ktx.Firebase
 import com.google.firebase.database.*
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ktx.database
+import com.google.firebase.storage.StorageReference
+import com.google.firebase.storage.ktx.storage
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -21,4 +23,6 @@ object FirebaseModule {
     @Provides fun userRef(): Query = Firebase.database.getReference("Users").orderByChild("lastUpdate/timestamp")
 
     @Provides fun channelRef(): DatabaseReference = Firebase.database.getReference("Channel").ref
+
+    @Provides fun fireStorage(): StorageReference=Firebase.storage.reference.child("profile")
 }

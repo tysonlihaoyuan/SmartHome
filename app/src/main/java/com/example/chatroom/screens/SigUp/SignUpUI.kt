@@ -30,7 +30,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.chatroom.Routes
 import com.example.chatroom.R.string as AppText
 @Composable
-fun RegisterPage(navController: NavHostController, viewModel: SignUpViewModel = hiltViewModel(), context : Context) {
+fun RegisterPage(navController: NavHostController, viewModel: SignUpViewModel = hiltViewModel()) {
     val uiState by viewModel.uiState
     Box(modifier = Modifier.fillMaxSize()) {
         ClickableText(
@@ -52,10 +52,7 @@ fun RegisterPage(navController: NavHostController, viewModel: SignUpViewModel = 
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-//        remember { mutableStateOf(TextFieldValue()) }
-////        val name = remember { mutableStateOf(TextFieldValue()) }
-//        val password = remember { mutableStateOf(TextFieldValue()) }
-//        val confirmpassword = remember { mutableStateOf(TextFieldValue()) }
+
 
         Text(text = "Register", style = TextStyle(fontSize = 40.sp, fontFamily = FontFamily.Cursive))
 
@@ -68,11 +65,7 @@ fun RegisterPage(navController: NavHostController, viewModel: SignUpViewModel = 
             value = uiState.email,
             onValueChange = { viewModel.onEmailChange(it) })
 
-//        Spacer(modifier = Modifier.height(20.dp))
-//        TextField(
-//            label = { Text(text = "name") },
-//            value = name.value,
-//            onValueChange = { name.value = it })
+
 
         //Password field
         Spacer(modifier = Modifier.height(20.dp))
@@ -94,10 +87,7 @@ fun RegisterPage(navController: NavHostController, viewModel: SignUpViewModel = 
         Spacer(modifier = Modifier.height(20.dp))
 
 
-//        val userName =  name.value.text.trim();
-//        val userEmail =  email.value.text.trim();
-//        val userPassword =  password.value.text;
-//        val userConfirmPassword =  confirmpassword.value.text;
+
         Box(modifier = Modifier.padding(40.dp, 0.dp, 40.dp, 0.dp)) {
             Button(
                 onClick = { viewModel.onSignUpClick(navController) },

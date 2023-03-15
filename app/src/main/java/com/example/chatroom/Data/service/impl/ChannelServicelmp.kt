@@ -32,8 +32,8 @@ class ChannelServicelmp@Inject constructor(private val auth:FirebaseAuth, privat
 }
 
     override  fun displayFirstMessage(messageList: List<Message>): String {
-        var result = ""
-        result = if (messageList.isNotEmpty()) {
+
+        var result = if (messageList.isNotEmpty()) {
             messageList.last().message
 
         } else {
@@ -54,13 +54,10 @@ class ChannelServicelmp@Inject constructor(private val auth:FirebaseAuth, privat
 
                     val channel: ChatChannel? = child.getValue<ChatChannel>()
                     val memberlist = channel?.memberList as ArrayList<String>
-                    if (channel != null) {
-                        channelMap[memberlist]= channel.channelUid
-                        if(memberlist.contains(auth.uid)){
-                            currentChannelList.add(0,channel)
-                            Log.w(ContentValues.TAG, "channel list: ${currentChannelList}")
-
-                        }
+                    channelMap[memberlist]= channel.channelUid
+                    if(memberlist.contains(auth.uid)){
+                        currentChannelList.add(0,channel)
+                        Log.w(ContentValues.TAG, "channel list: ${currentChannelList}")
 
                     }
 
@@ -87,14 +84,16 @@ class ChannelServicelmp@Inject constructor(private val auth:FirebaseAuth, privat
 
             val newChannelUid = channelRef.push().key.toString()
 
-            val newChannelMessageList: MutableList<Message> = mutableListOf()
+            val newChannelMessageList: MutableList<Message> = mutableListOf<Message>()
 
-            val sender = auth.uid.toString()
-            val timestamp = HashMap<String?, Any?>()
-            timestamp["timestamp"] = ServerValue.TIMESTAMP
-            timestamp.put("timestamp", ServerValue.TIMESTAMP);
-            val newMessage = Message(sender, toUserUid, " ", timestamp)
-            newChannelMessageList.add(newMessage)
+//            val sender = auth.uid.toString()
+//            val timestamp = HashMap<String?, Any?>()
+//            timestamp["timestamp"] = ServerValue.TIMESTAMP
+//            timestamp.put("timestamp", ServerValue.TIMESTAMP);
+//            val newMessage = Message(sender, toUserUid, " ", timestamp)
+//            newChannelMessageList.add(newMessage)
+
+
             val newChannelCreatedTimeStamp = HashMap<String?, Any?>()
             newChannelCreatedTimeStamp["timestamp"] = ServerValue.TIMESTAMP
             newChannelCreatedTimeStamp.put("timestamp", ServerValue.TIMESTAMP);

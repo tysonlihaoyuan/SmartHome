@@ -15,7 +15,7 @@ import com.example.chatroom.screens.Home.HomePage
 import com.example.chatroom.screens.Login.LoginPage
 import com.example.chatroom.screens.SigUp.RegisterPage
 
-fun NavGraphBuilder.channelNavGraph(navHostController: NavHostController, context: Context,viewModel: ChatChannelViewModel){
+fun NavGraphBuilder.channelNavGraph(navHostController: NavHostController){
 
     navigation(startDestination = Routes.FriendList.route, route = Routes.ChannelAndFriend.route){
 

@@ -1,5 +1,7 @@
 package com.example.chatroom.Data.service
 
+import android.graphics.Bitmap
+
 import com.example.chatroom.Data.User
 import kotlinx.coroutines.flow.Flow
 
@@ -15,6 +17,8 @@ interface AccountService {
     suspend fun linkAccount(email: String, password: String)
     suspend fun deleteAccount()
     suspend fun signOut()
+    suspend fun selectProfile()
+    suspend fun uploadProfilePicture(bitmap: Bitmap)
 
 
 }

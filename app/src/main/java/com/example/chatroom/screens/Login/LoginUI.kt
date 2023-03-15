@@ -29,7 +29,7 @@ import com.example.chatroom.UI.Theme.Purple700
 import com.example.chatroom.Routes
 
 @Composable
-fun LoginPage(navController: NavHostController, viewModel: LoginViewModel = hiltViewModel(), context : Context) {
+fun LoginPage(navController: NavHostController, viewModel: LoginViewModel = hiltViewModel()) {
     val uiState by viewModel.uiState
     Box(modifier = Modifier.fillMaxSize()) {
         ClickableText(

@@ -15,8 +15,6 @@ import com.example.chatroom.Data.service.ChannelService
 import com.example.chatroom.Data.service.FriendService
 import com.example.chatroom.Routes
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.collect
-
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
